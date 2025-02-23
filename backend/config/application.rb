@@ -43,5 +43,14 @@ module Backend
 
     config.time_zone = "Tokyo"
     config.active_record.default_timezone = :local
+
+    config.generators do |g|
+      g.helper false
+      g.test_framework :rspec,
+                       system_specs: false,
+                       view_specs: false,
+                       helper_specs: false,
+                       request_specs: true
+    end
   end
 end
