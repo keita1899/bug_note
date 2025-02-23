@@ -1,11 +1,10 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
+import Image from 'next/image'
 import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-
   useEffect(() => {
     const fetchHello = async () => {
       const response = await fetch('http://localhost:3100/api/v1/hello')
