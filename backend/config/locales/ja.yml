@@ -1,0 +1,6 @@
+ja:
+  activerecord:
+    models:
+    attributes:
+  errors:
+    messages:
