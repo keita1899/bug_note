@@ -1,17 +1,17 @@
+import { fetcher } from '@/utils'
+import { useQuery } from '@tanstack/react-query'
 import { Inter } from 'next/font/google'
 import Image from 'next/image'
-import { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  useEffect(() => {
-    const fetchHello = async () => {
-      const response = await fetch('http://localhost:3100/api/v1/hello')
-      console.log(response)
-    }
-    fetchHello()
-  }, [])
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['hello'],
+    queryFn: () => fetcher('http://localhost:3100/api/v1/hello'),
+  })
+
+  console.log(data)
 
   return (
     <main
