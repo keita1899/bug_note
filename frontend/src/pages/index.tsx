@@ -6,12 +6,15 @@ import { fetcher } from '@/utils'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const { data } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['hello'],
     queryFn: () => fetcher('http://localhost:3100/api/v1/hello'),
   })
 
   console.log(data)
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error.message}</div>
 
   return (
     <main
