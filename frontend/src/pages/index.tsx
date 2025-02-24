@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Layout } from '@/components/Layout'
-import { Error } from '@/components/utilities/Error'
+import { ErrorMessage } from '@/components/utilities/ErrorMessage'
 import { Loading } from '@/components/utilities/Loading'
 import { fetcher } from '@/utils'
 
@@ -13,7 +13,7 @@ export default function Home() {
   console.log(data)
 
   if (isLoading) return <Loading />
-  if (error) return <Error />
+  if (error) return <ErrorMessage />
 
   return (
     <Layout>

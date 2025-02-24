@@ -2,7 +2,7 @@ type ErrorProps = {
   message?: string
 }
 
-export const Error = ({ message }: ErrorProps) => {
+export const ErrorMessage = ({ message }: ErrorProps) => {
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="alert alert-error max-w-md p-6 shadow-lg">
