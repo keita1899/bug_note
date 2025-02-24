@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Layout } from '@/components/Layout'
 import { Error } from '@/components/utilities/Error'
-import { Loading } from '@/components/utilities/Loaing'
+import { Loading } from '@/components/utilities/Loading'
 import { fetcher } from '@/utils'
 
 export default function Home() {
