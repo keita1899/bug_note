@@ -32,8 +32,6 @@ export default function Document() {
           content="プログラミングのエラー内容や解決方法を記録し、検索できるアプリ。"
         />
         <meta name="twitter:image" content="/twitter-image.png" />
-
-        <title>Bug Note</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body>
