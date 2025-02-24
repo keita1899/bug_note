@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint --dir src",
     "format": "next lint --fix --dir src",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.66.9",
