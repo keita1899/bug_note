@@ -49,6 +49,9 @@ group :development, :test do
   gem "debug", platforms: %i[mri mswin mswin64 mingw x64_mingw]
 
   gem "dotenv-rails"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "rspec-rails"
 end
 
 group :development do
@@ -64,10 +67,4 @@ group :development do
   gem "rubocop-performance"
   gem "rubocop-rails"
   gem "rubocop-rspec"
-end
-
-group :test do
-  gem "factory_bot_rails"
-  gem "faker"
-  gem "rspec-rails"
 end
