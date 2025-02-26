@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export const Header = () => {
   return (
     <div className="navbar bg-base-100">
@@ -7,7 +9,7 @@ export const Header = () => {
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
           <li>
-            <a>Link</a>
+            <Link href="/auth/signup">新規登録</Link>
           </li>
         </ul>
         <div className="dropdown dropdown-end">
