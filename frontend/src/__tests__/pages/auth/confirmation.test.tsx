@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
+import { NextRouter, useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import Confirmation from '@/pages/auth/confirmation'
 
@@ -16,14 +16,14 @@ jest.mock('react-toastify', () => ({
 }))
 
 describe('Confirmation', () => {
-  let mockRouter: any
+  let mockRouter: NextRouter
 
   beforeEach(() => {
     mockRouter = {
       query: {},
       isReady: true,
       push: jest.fn(),
-    }
+    } as unknown as NextRouter
     ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
   })
 

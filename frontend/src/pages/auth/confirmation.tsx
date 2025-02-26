@@ -39,7 +39,7 @@ const Confirmation = () => {
       toast.error('確認トークンが存在しません')
       router.push('/')
     }
-  }, [router.query])
+  }, [router])
 
   return (
     <Layout>
