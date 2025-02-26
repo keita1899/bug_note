@@ -109,6 +109,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set environment variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=http://localhost:3100/api/v1" >> $GITHUB_ENV
+
       - name: Install dependencies
         run: |
           npm install

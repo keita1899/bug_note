@@ -1,0 +1,26 @@
+<p>こんにちは、<%= @resource.email %> さん</p>
+
+<p>このたびは、当サービスにご登録いただきありがとうございます。</p>
+<p>アカウントを有効化するには、以下のリンクをクリックしてください：</p>
+
+<p>
+  <a href="<%= Settings.front_domain %>/auth/confirmation?confirmation_token=<%= @token %>">
+    アカウントを有効化する
+  </a>
+</p>
+
+<p>このリンクの有効期限は一定時間のみとなっておりますので、お早めにお手続きください。</p>
+
+<p>万が一、リンクがうまく機能しない場合は、以下のURLをコピーしてブラウザのアドレスバーに貼り付けてアクセスしてください：</p>
+
+<p>
+  <code><%= Settings.front_domain %>/auth/confirmation?confirmation_token=<%= @token %></code>
+</p>
+
+<p>もし何か問題が発生した場合は、お手数ですがサポートチームまでご連絡ください。</p>
+
+<p>今後ともよろしくお願いいたします。</p>
+
+<p>----------------------</p>
+<p>サポートチーム</p>
+<p>Email: support@example.com</p>

@@ -38,11 +38,21 @@ gem "active_model_serializers"
 
 gem "kaminari"
 
+gem "devise"
+
+gem "devise-i18n"
+
+gem "devise_token_auth"
+
+gem "config"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mswin mswin64 mingw x64_mingw]
 
-  gem "dotenv-rails"
+  gem "factory_bot_rails"
+  gem "faker"
+  gem "rspec-rails"
 end
 
 group :development do
@@ -58,10 +68,4 @@ group :development do
   gem "rubocop-performance"
   gem "rubocop-rails"
   gem "rubocop-rspec"
-end
-
-group :test do
-  gem "factory_bot_rails"
-  gem "faker"
-  gem "rspec-rails"
 end

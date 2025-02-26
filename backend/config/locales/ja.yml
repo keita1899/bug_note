@@ -2,5 +2,11 @@ ja:
   activerecord:
     models:
     attributes:
+      user:
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード確認用
   errors:
     messages:
+      invalid_email: 無効なメールアドレスです
+      password_complexity: は半角英字と数字をそれぞれ1文字以上含む必要があります
