@@ -3,6 +3,7 @@ import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import Confirmation from '@/pages/auth/confirmation'
+import { AuthProvider } from '@/providers/AuthProvider'
 
 jest.mock('axios')
 jest.mock('next/router', () => ({
@@ -28,7 +29,11 @@ describe('Confirmation', () => {
   })
 
   it('ローディングメッセージが表示される', () => {
-    render(<Confirmation />)
+    render(
+      <AuthProvider>
+        <Confirmation />
+      </AuthProvider>,
+    )
     expect(
       screen.getByText('アカウントを有効化しています...'),
     ).toBeInTheDocument()
@@ -38,7 +43,11 @@ describe('Confirmation', () => {
     mockRouter.query['confirmation_token'] = 'valid_token'
     ;(axios.patch as jest.Mock).mockResolvedValue({})
 
-    render(<Confirmation />)
+    render(
+      <AuthProvider>
+        <Confirmation />
+      </AuthProvider>,
+    )
 
     await waitFor(() => {
       expect(axios.patch).toHaveBeenCalledWith(
@@ -58,7 +67,11 @@ describe('Confirmation', () => {
       response: { data: { message: '予期しないエラーが発生しました' } },
     })
 
-    render(<Confirmation />)
+    render(
+      <AuthProvider>
+        <Confirmation />
+      </AuthProvider>,
+    )
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('予期しないエラーが発生しました')
@@ -69,7 +82,11 @@ describe('Confirmation', () => {
   it('確認トークンがない場合、エラーメッセージを表示しリダイレクトする', async () => {
     mockRouter.query = {}
 
-    render(<Confirmation />)
+    render(
+      <AuthProvider>
+        <Confirmation />
+      </AuthProvider>,
+    )
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith('確認トークンが存在しません')

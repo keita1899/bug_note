@@ -1,9 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import EmailSent from '@/pages/auth/email-sent'
+import { AuthProvider } from '@/providers/AuthProvider'
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}))
 
 describe('EmailSent', () => {
   it('確認メッセージが表示されること', () => {
-    render(<EmailSent />)
+    render(
+      <AuthProvider>
+        <EmailSent />,
+      </AuthProvider>,
+    )
 
     expect(screen.getByText('確認メールを送信しました')).toBeInTheDocument()
 
