@@ -1,37 +1,44 @@
-import { FieldErrors, UseFormRegister } from 'react-hook-form'
-import { FormValues } from '../validations/signupValidation'
+import {
+  FieldError,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from 'react-hook-form'
 
-type FormFieldProps = {
+type FormFieldProps<T extends FieldValues> = {
   label: string
-  name: keyof FormValues
+  name: Path<T>
   type: 'text' | 'email' | 'password'
-  register: UseFormRegister<FormValues>
-  errors: FieldErrors<FormValues>
+  register: UseFormRegister<T>
+  errors: FieldErrors<T>
   placeholder: string
 }
 
-export const FormField = ({
+export const FormField = <T extends FieldValues>({
   label,
   name,
   type,
   register,
   errors,
   placeholder,
-}: FormFieldProps) => {
+}: FormFieldProps<T>) => {
   return (
     <div>
-      <label htmlFor={name} className="label">
+      <label htmlFor={name as string} className="label">
         <span className="label-text">{label}</span>
       </label>
       <input
-        id={name}
+        id={name as string}
         type={type}
         {...register(name)}
         className="input input-bordered w-full"
         placeholder={placeholder}
       />
       {errors[name] && (
-        <p className="mt-1 text-sm text-red-500">{errors[name]?.message}</p>
+        <p className="mt-1 text-sm text-red-500">
+          {(errors[name] as FieldError)?.message}
+        </p>
       )}
     </div>
   )
