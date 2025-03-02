@@ -9,6 +9,18 @@ Rails.application.routes.draw do
       namespace :user do
         resource :confirmations, only: [:update]
       end
+      namespace :tech_stack do
+        resources :operation_systems, only: [:index, :show]
+        resources :programming_languages, only: [:index, :show]
+        resources :frameworks, only: [:index, :show]
+        resources :databases, only: [:index, :show]
+        resources :platforms, only: [:index, :show]
+        resources :tools, only: [:index, :show]
+        resources :editors, only: [:index, :show]
+        resources :browsers, only: [:index, :show]
+        resources :virtual_machines, only: [:index, :show]
+        resources :middlewares, only: [:index, :show]
+      end
     end
   end
 
