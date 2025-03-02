@@ -109,6 +109,18 @@ RSpec.describe "Api::V1::TechStack", type: :request do
     end
   end
 
+  describe "GET /api/v1/tech_stack/platforms/:id" do
+    let!(:item) { create(:platform) }
+
+    it "特定のプラットフォームを返す" do
+      get "/api/v1/tech_stack/platforms/#{item.id}"
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json["id"]).to eq(item.id)
+      expect(json["name"]).to eq(item.name)
+    end
+  end
+
   describe "GET /api/v1/tech_stack/tools" do
     let!(:items) { create_list(:tool, 3) }
 
@@ -118,6 +130,18 @@ RSpec.describe "Api::V1::TechStack", type: :request do
       json = JSON.parse(response.body)
       expect(json.size).to eq(3)
       expect(json.first.keys).to contain_exactly("id", "name")
+    end
+  end
+
+  describe "GET /api/v1/tech_stack/tools/:id" do
+    let!(:item) { create(:tool) }
+
+    it "特定のツールを返す" do
+      get "/api/v1/tech_stack/tools/#{item.id}"
+      expect(response).to have_http_status(:ok)
+      json = JSON.parse(response.body)
+      expect(json["id"]).to eq(item.id)
+      expect(json["name"]).to eq(item.name)
     end
   end
 
