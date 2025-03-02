@@ -1,4 +1,5 @@
 operation_systems = [
+  "Android",
   "CentOS",
   "iOS",
   "Linux",
