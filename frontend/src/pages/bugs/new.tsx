@@ -12,6 +12,7 @@ import {
 import { toast } from 'react-toastify'
 import { Layout } from '@/components/Layout'
 import { Category } from '@/features/bugs/types/Category'
+import { AddFormButton } from '@/features/bugs/ui/AddFormButton'
 import { CancelButton } from '@/features/bugs/ui/CancelButton'
 import { DeleteFormButton } from '@/features/bugs/ui/DeleteFormButton'
 import { DynamicFormField } from '@/features/bugs/ui/DynamicFormField'
@@ -26,7 +27,6 @@ import {
 import { useRequiredSignedIn } from '@/hooks/useRequiredSignedIn'
 import { API_URLS } from '@/utils/api'
 import { getAuthHeaders } from '@/utils/headers'
-import { AddFormButton } from '@/features/bugs/ui/AddFormButton'
 
 export default function BugFormContainer() {
   useRequiredSignedIn()
