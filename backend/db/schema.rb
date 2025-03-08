@@ -10,62 +10,57 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_02_072859) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_06_144310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "browsers", force: :cascade do |t|
-    t.string "name"
+  create_table "attempts", force: :cascade do |t|
+    t.bigint "bug_id", null: false
+    t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bug_id"], name: "index_attempts_on_bug_id"
   end
 
-  create_table "databases", force: :cascade do |t|
-    t.string "name"
+  create_table "bugs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.text "error_message"
+    t.text "content"
+    t.text "expected_behavior"
+    t.text "solution"
+    t.text "cause"
+    t.text "etc"
+    t.string "status", default: "draft", null: false
+    t.boolean "is_solved", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_bugs_on_user_id"
   end
 
-  create_table "editors", force: :cascade do |t|
-    t.string "name"
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_categories_on_name", unique: true
   end
 
-  create_table "frameworks", force: :cascade do |t|
-    t.string "name"
+  create_table "environments", force: :cascade do |t|
+    t.bigint "bug_id", null: false
+    t.string "name", null: false
+    t.string "version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category", default: "", null: false
+    t.index ["bug_id"], name: "index_environments_on_bug_id"
   end
 
-  create_table "middlewares", force: :cascade do |t|
-    t.string "name"
+  create_table "references", force: :cascade do |t|
+    t.bigint "bug_id", null: false
+    t.string "url", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "operation_systems", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "platforms", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "programming_languages", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "tools", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["bug_id"], name: "index_references_on_bug_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -93,9 +88,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_02_072859) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  create_table "virtual_machines", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+  add_foreign_key "attempts", "bugs"
+  add_foreign_key "bugs", "users"
+  add_foreign_key "environments", "bugs"
+  add_foreign_key "references", "bugs"
 end
