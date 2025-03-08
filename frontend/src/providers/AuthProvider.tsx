@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isFetched, setIsFetched] = useState(false)
 
   const fetchCurrentUser = async () => {
-    console.log('fetchCurrentUser')
     try {
       const response = await axios.get(API_URLS.AUTH.CURRENT_USER, {
         headers: getAuthHeaders() ?? {},
