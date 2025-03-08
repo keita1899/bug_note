@@ -57,7 +57,7 @@ describe('Confirmation', () => {
       expect(toast.success).toHaveBeenCalledWith(
         'アカウントが有効化されました。',
       )
-      expect(mockRouter.push).toHaveBeenCalledWith('/signin')
+      expect(mockRouter.push).toHaveBeenCalledWith('/auth/signin')
     })
   })
 
