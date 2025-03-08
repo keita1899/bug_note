@@ -5,7 +5,7 @@ class Api::V1::BugsController < Api::V1::BaseController
     form = BugForm.new(bug_params, current_user)
 
     if form.save
-      render json: { message: "メモを保存しました" }, status: :created
+      render json: { message: "バグを保存しました" }, status: :created
     else
       render json: { errors: form.errors.full_messages }, status: :unprocessable_entity
     end

@@ -51,7 +51,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         }.to change { Bug.count }.by(1)
 
         expect(response).to have_http_status(:created)
-        expect(JSON.parse(response.body)["message"]).to eq("メモを保存しました")
+        expect(JSON.parse(response.body)["message"]).to eq("バグを保存しました")
       end
 
       it "間違った値が入力された場合、バグの登録が失敗し、422エラーを返す" do
