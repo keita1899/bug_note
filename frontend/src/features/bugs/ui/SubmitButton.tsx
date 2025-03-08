@@ -7,7 +7,7 @@ export const SubmitButton = ({ isLoading }: SubmitButtonProps) => {
     <button
       type="submit"
       className="btn btn-primary w-32 px-6  "
-      aria-label=""
+      aria-label="保存する"
       disabled={isLoading}
     >
       {isLoading ? (

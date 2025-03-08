@@ -15,6 +15,7 @@ export const DeleteFormButton = ({
       onClick={onClick}
       className="btn btn-circle disabled:opacity-50"
       disabled={disabled}
+      aria-label="Delete item"
     >
       <MdRemove className="text-red-500" />
     </button>

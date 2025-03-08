@@ -12,6 +12,7 @@ export const AddFormButton = ({ onClick, disabled }: AddFormButtonProps) => {
       onClick={onClick}
       className="btn btn-circle"
       disabled={disabled}
+      aria-label="Add item"
     >
       <MdAdd className="text-blue-500" />
     </button>
