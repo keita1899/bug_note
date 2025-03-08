@@ -6,7 +6,6 @@ type DynamicFormFieldProps<T extends { id: string }> = {
   title: string
   fields: T[]
   isFieldEmpty: boolean
-  name: (index: number) => string
   renderInput: (index: number) => ReactNode
   addItem: () => void
   removeItem: (index: number) => void

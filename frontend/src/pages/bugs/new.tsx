@@ -250,7 +250,6 @@ export default function BugFormContainer() {
 
         <DynamicFormField
           fields={attemptFields}
-          name={(index) => `attempts[${index}].content`}
           renderInput={(index) => (
             <Textarea
               name={`attempts[${index}].content` as Path<BugFormValues>}
@@ -274,7 +273,6 @@ export default function BugFormContainer() {
 
         <DynamicFormField
           fields={referenceFields}
-          name={(index) => `references[${index}].url`}
           renderInput={(index) => (
             <Input
               name={`references[${index}].url` as Path<BugFormValues>}
