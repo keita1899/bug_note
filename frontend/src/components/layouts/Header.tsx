@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { FaPen } from 'react-icons/fa'
 import { useAuth } from '@/hooks/useAuth'
 
 export const Header = () => {
@@ -12,29 +13,36 @@ export const Header = () => {
         {isFetched && (
           <>
             {isAuthenticated ? (
-              <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="avatar btn btn-circle btn-ghost"
-                >
-                  <div className="w-10 rounded-full"></div>
+              <>
+                <Link href="/bugs/new">
+                  <button className="btn btn-circle btn-ghost">
+                    <FaPen className="text-xl" />
+                  </button>
+                </Link>
+                <div className="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="avatar btn btn-circle btn-ghost"
+                  >
+                    <div className="w-10 rounded-full"></div>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
+                  >
+                    <li>
+                      <a className="justify-between">プロフィール</a>
+                    </li>
+                    <li>
+                      <a>設定</a>
+                    </li>
+                    <li>
+                      <button onClick={signout}>ログアウト</button>
+                    </li>
+                  </ul>
                 </div>
-                <ul
-                  tabIndex={0}
-                  className="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
-                >
-                  <li>
-                    <a className="justify-between">プロフィール</a>
-                  </li>
-                  <li>
-                    <a>設定</a>
-                  </li>
-                  <li>
-                    <button onClick={signout}>ログアウト</button>
-                  </li>
-                </ul>
-              </div>
+              </>
             ) : (
               <ul className="menu menu-horizontal px-1">
                 <li>
