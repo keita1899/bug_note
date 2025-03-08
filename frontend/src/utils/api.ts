@@ -5,4 +5,8 @@ export const API_URLS = {
     CONFIRMATION: `${process.env.NEXT_PUBLIC_API_URL}/user/confirmations`,
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
   },
+  BUG: {
+    CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
+  },
+  CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
 }

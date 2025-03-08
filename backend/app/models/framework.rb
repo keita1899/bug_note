@@ -1,2 +1,0 @@
-class Framework < ApplicationRecord
-end

@@ -1,2 +1,0 @@
-class Browser < ApplicationRecord
-end

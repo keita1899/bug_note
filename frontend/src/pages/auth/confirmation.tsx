@@ -22,7 +22,7 @@ const Confirmation = () => {
             confirmation_token: token,
           })
           toast.success('アカウントが有効化されました。')
-          router.push('/signin')
+          router.push('/auth/signin')
         } catch (error) {
           if (error instanceof AxiosError) {
             toast.error(

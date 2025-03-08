@@ -1,11 +1,28 @@
 ja:
   activerecord:
     models:
+      bug: バグ
     attributes:
       user:
         email: メールアドレス
         password: パスワード
         password_confirmation: パスワード確認用
+      bug:
+        title: タイトル
+        content: 内容
+        error_message: エラーメッセージ
+        expected_behavior: やりたいこと
+        solution: 解決方法
+        cause: 原因
+        etc: その他
+        environments:
+          category: カテゴリー
+          name: 名前
+          version: バージョン
+        attempts:
+          content: 試したこと
+        references:
+          url: 参考リンク
   errors:
     messages:
       invalid_email: 無効なメールアドレスです
