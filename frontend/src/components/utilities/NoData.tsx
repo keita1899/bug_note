@@ -1,5 +1,5 @@
 export const NoData = () => (
-  <div className="p-4 text-center pt-32">
+  <div className="p-4 pt-32 text-center">
     <p className="text-lg font-semibold text-gray-600">データがありません</p>
   </div>
 )
