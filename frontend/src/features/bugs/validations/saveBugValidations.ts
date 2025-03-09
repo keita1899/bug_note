@@ -40,7 +40,7 @@ export const bugSchema = z
     ),
     etc: z.string().optional(),
     is_solved: z.boolean(),
-    status: z.enum(['draft', 'public']).optional(),
+    status: z.enum(['draft', 'published']).optional(),
   })
   .refine(
     (data) => {
@@ -55,7 +55,7 @@ export const bugSchema = z
   )
   .refine(
     (data) => {
-      return data.is_solved || data.status !== 'public'
+      return data.is_solved || data.status !== 'published'
     },
     {
       message: '未解決の場合公開できません',

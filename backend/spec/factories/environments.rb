@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :environment do
     category { "カテゴリー" }
-    name { Faker::Technology.name }
+    name { Faker::App.name }
     version { Faker::App.version }
     bug
   end

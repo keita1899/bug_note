@@ -9,6 +9,7 @@ FactoryBot.define do
     etc { Faker::Lorem.paragraph }
     status { "draft" }
     is_solved { false }
+    created_at { Time.zone.now }
     user
 
     after(:create) do |bug|

@@ -1,9 +1,123 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Bug", type: :request do
+  let!(:user) { create(:user) }
+  let(:headers) { user.create_new_auth_token }
+
+  describe "GET /api/v1/bugs" do
+    let!(:bugs) { create_list(:bug, 25, user: user, status: "published") }
+    let!(:unpublished_bug) { create(:bug, user: user, status: "draft") }
+
+    context "ログインしている場合" do
+      before do
+        get "/api/v1/bugs", headers: headers, params: { page: page }
+      end
+
+      context "1ページ目" do
+        let(:page) { 1 }
+
+        it "ステータスコード200が返る" do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "公開されているバグのリストが返る" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].size).to eq(10)
+          expect(json["bugs"].pluck("id")).to eq(bugs.sort_by(&:created_at).reverse.first(10).pluck(:id))
+        end
+
+        it "未公開のバグは含まれない" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+        end
+
+        it "レスポンスにページネーションのメタデータが含まれる" do
+          json = JSON.parse(response.body)
+          expect(json["meta"]["total_pages"]).to eq(3)
+          expect(json["meta"]["current_page"]).to eq(1)
+        end
+      end
+
+      context "2ページ目" do
+        let(:page) { 2 }
+
+        it "ステータスコード200が返る" do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "公開されているバグのリストが返る" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].size).to eq(10)
+          expect(json["bugs"].pluck("id")).to eq(bugs.sort_by(&:created_at).reverse[10..19].pluck(:id))
+        end
+
+        it "未公開のバグは含まれない" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+        end
+
+        it "レスポンスにページネーションのメタデータが含まれる" do
+          json = JSON.parse(response.body)
+          expect(json["meta"]["total_pages"]).to eq(3)
+          expect(json["meta"]["current_page"]).to eq(2)
+        end
+      end
+
+      context "3ページ目" do
+        let(:page) { 3 }
+
+        it "ステータスコード200が返る" do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "公開されているバグのリストが返る" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].size).to eq(5)
+          expect(json["bugs"].pluck("id")).to eq(bugs.sort_by(&:created_at).reverse[20..24].pluck(:id))
+        end
+
+        it "未公開のバグは含まれない" do
+          json = JSON.parse(response.body)
+          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+        end
+
+        it "レスポンスにページネーションのメタデータが含まれる" do
+          json = JSON.parse(response.body)
+          expect(json["meta"]["total_pages"]).to eq(3)
+          expect(json["meta"]["current_page"]).to eq(3)
+        end
+      end
+    end
+
+    context "ログインしていない場合" do
+      before do
+        get "/api/v1/bugs"
+      end
+
+      it "ステータスコード200が返る" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "公開されているバグのリストが返る" do
+        json = JSON.parse(response.body)
+        expect(json["bugs"].size).to eq(10)
+        expect(json["bugs"].pluck("id")).to eq(bugs.sort_by(&:created_at).reverse.first(10).pluck(:id))
+      end
+
+      it "未公開のバグは含まれない" do
+        json = JSON.parse(response.body)
+        expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+      end
+
+      it "レスポンスにページネーションのメタデータが含まれる" do
+        json = JSON.parse(response.body)
+        expect(json["meta"]["total_pages"]).to eq(3)
+        expect(json["meta"]["current_page"]).to eq(1)
+      end
+    end
+  end
+
   describe "POST /api/v1/bugs" do
-    let!(:user) { create(:user) }
-    let(:headers) { user.create_new_auth_token }
     let(:valid_params) do
       {
         title: "Example Bug Title",

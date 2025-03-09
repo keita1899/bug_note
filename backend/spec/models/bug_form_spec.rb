@@ -43,7 +43,7 @@ RSpec.describe BugForm, type: :model do
       end
 
       it "解決済の状態でステータスを公開にすると成功する" do
-        bug_form.status = "public"
+        bug_form.status = "published"
         bug_form.is_solved = true
         expect(bug_form).to be_valid
       end
@@ -86,7 +86,7 @@ RSpec.describe BugForm, type: :model do
       end
 
       it "下書きの状態でステータスを公開にすると失敗する" do
-        bug_form.status = "public"
+        bug_form.status = "published"
         expect(bug_form).to be_invalid
       end
 

@@ -6,6 +6,7 @@ export const API_URLS = {
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
   },
   BUG: {
+    INDEX: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,

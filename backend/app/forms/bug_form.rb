@@ -7,7 +7,7 @@ class BugForm
   validates :title, presence: true, length: { maximum: 255 }
   validates :content, presence: true
   validate :solution_required_if_solved
-  validate :status_public_if_unsolved
+  validate :status_published_if_unsolved
   validate :valid_references_urls
   validate :valid_environments_name_and_version
 
@@ -55,8 +55,8 @@ class BugForm
       end
     end
 
-    def status_public_if_unsolved
-      if !is_solved && status == "public"
+    def status_published_if_unsolved
+      if !is_solved && status == "published"
         errors.add(:status, "未解決の場合公開できません")
       end
     end
