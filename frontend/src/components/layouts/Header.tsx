@@ -7,7 +7,9 @@ export const Header = () => {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Link href="/bugs" className="btn btn-ghost text-xl">
+          Bug Note
+        </Link>
       </div>
       <div className="flex-none">
         {isFetched && (

@@ -14,8 +14,13 @@ export type Bug = {
   solution: string
   references: Reference[]
   etc: string
-  status: 'draft' | 'public'
+  status: 'draft' | 'published'
   isSolved: boolean
   createdAt: string
   updatedAt: string
+  user: {
+    image: string
+    name: string
+    nickname: string
+  }
 }
