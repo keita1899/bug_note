@@ -1,5 +1,12 @@
 class Api::V1::BugsController < Api::V1::BaseController
-  before_action :authenticate_user!
+  include Pagination
+
+  before_action :authenticate_user!, only: [:create]
+
+  def index
+    bugs = Bug.where(status: "published").includes(:user, :environments, :attempts, :references).order(created_at: :desc).page(params[:page] || 1).per(10)
+    render json: bugs, each_serializer: BugSerializer, status: :ok, meta: pagination(bugs), adapter: :json
+  end
 
   def create
     form = BugForm.new(bug_params, current_user)

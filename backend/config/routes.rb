@@ -10,7 +10,7 @@ Rails.application.routes.draw do
         resource :confirmations, only: [:update]
       end
       resources :categories, only: [:index]
-      resources :bugs, only: [:create]
+      resources :bugs, only: [:index, :create]
     end
   end
 
