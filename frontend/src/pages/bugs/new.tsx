@@ -25,6 +25,7 @@ import {
   bugSchema,
 } from '@/features/bugs/validations/saveBugValidations'
 import { useRequiredSignedIn } from '@/hooks/useRequiredSignedIn'
+import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
 import { getAuthHeaders } from '@/utils/headers'
 
@@ -82,14 +83,9 @@ export default function BugFormContainer() {
     name: 'references',
   })
 
-  const fetchCategories = async () => {
-    const res = await axios.get(API_URLS.CATEGORIES)
-    return res.data
-  }
-
   const { data: categories } = useQuery<Category[]>({
     queryKey: ['categories'],
-    queryFn: fetchCategories,
+    queryFn: () => fetcher(API_URLS.CATEGORIES),
   })
 
   const handleChangeCategory = (index: number, value: string) => {
@@ -128,14 +124,14 @@ export default function BugFormContainer() {
           <div className="flex flex-col items-center">
             <input
               type="checkbox"
-              checked={status === 'public'}
+              checked={status === 'published'}
               onChange={() =>
-                setValue('status', status === 'draft' ? 'public' : 'draft')
+                setValue('status', status === 'draft' ? 'published' : 'draft')
               }
               className="toggle toggle-lg"
             />
             <span className="mt-1 text-sm">
-              {status === 'public' ? '公開' : '下書き'}
+              {status === 'published' ? '公開' : '下書き'}
             </span>
           </div>
 
