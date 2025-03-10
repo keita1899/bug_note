@@ -35,7 +35,7 @@ const BugDetail = () => {
               <p className="text-sm text-gray-500">{`${new Date(bug?.createdAt).toLocaleDateString()} に投稿`}</p>
               <h2 className="card-title text-3xl">{bug?.title}</h2>
               <div className="my-4 space-y-20">
-                <EnvironmentTable environments={bug?.environments} />
+                <EnvironmentTable environments={bug?.environments || []} />
                 <BugSection
                   title="エラーメッセージ"
                   content={bug?.errorMessage}
@@ -47,7 +47,7 @@ const BugDetail = () => {
                 />
                 <BugSection title="試したこと">
                   <ul>
-                    {bug?.attempts.map((attempt, index) => (
+                    {bug?.attempts?.map((attempt, index) => (
                       <li key={index} className="mb-2">
                         <p>{attempt.content}</p>
                       </li>
@@ -58,7 +58,7 @@ const BugDetail = () => {
                 <BugSection title="原因" content={bug?.cause} />
                 <BugSection title="参考リンク">
                   <ul>
-                    {bug?.references.map((reference, index) => (
+                    {bug?.references?.map((reference, index) => (
                       <li key={index} className="mb-2">
                         <a
                           href={reference.url}
