@@ -7,6 +7,7 @@ export const API_URLS = {
   },
   BUG: {
     INDEX: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
+    SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,

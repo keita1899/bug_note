@@ -19,6 +19,7 @@ export type Bug = {
   createdAt: string
   updatedAt: string
   user: {
+    id: number
     image: string
     name: string
     nickname: string

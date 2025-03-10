@@ -6,7 +6,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
   describe "GET /api/v1/bugs" do
     let!(:bugs) { create_list(:bug, 25, user: user, status: "published") }
-    let!(:unpublished_bug) { create(:bug, user: user, status: "draft") }
+    let!(:draft_bug) { create(:bug, user: user) }
 
     context "ログインしている場合" do
       before do
@@ -28,7 +28,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
         it "未公開のバグは含まれない" do
           json = JSON.parse(response.body)
-          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+          expect(json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
@@ -53,7 +53,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
         it "未公開のバグは含まれない" do
           json = JSON.parse(response.body)
-          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+          expect(json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
@@ -78,7 +78,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
         it "未公開のバグは含まれない" do
           json = JSON.parse(response.body)
-          expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+          expect(json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
@@ -106,7 +106,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
       it "未公開のバグは含まれない" do
         json = JSON.parse(response.body)
-        expect(json["bugs"].pluck("id")).not_to include(unpublished_bug.id.to_s)
+        expect(json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
       end
 
       it "レスポンスにページネーションのメタデータが含まれる" do
@@ -114,6 +114,84 @@ RSpec.describe "Api::V1::Bug", type: :request do
         expect(json["meta"]["total_pages"]).to eq(3)
         expect(json["meta"]["current_page"]).to eq(1)
       end
+    end
+  end
+
+  describe "GET /api/v1/bugs/:id" do
+    let(:other_user) { create(:user) }
+    let(:published_bug) { create(:bug, :published, user: other_user) }
+    let(:draft_bug) { create(:bug, user: other_user) }
+    let(:own_draft_bug) { create(:bug, user: user) }
+    let(:own_solved_draft_bug) { create(:bug, :solved_draft, user: user) }
+    let(:own_published_bug) { create(:bug, :published, user: user) }
+
+    context "ログインしている場合" do
+      it "自分の下書きの未解決バグの詳細データが返る" do
+        get "/api/v1/bugs/#{own_draft_bug.id}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(own_draft_bug.id)
+        expect(JSON.parse(response.body)["is_solved"]).to be(false)
+        expect(JSON.parse(response.body)["status"]).to eq("draft")
+      end
+
+      it "自分の下書きの解決済バグの詳細データが返る" do
+        get "/api/v1/bugs/#{own_solved_draft_bug.id}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(own_solved_draft_bug.id)
+        expect(JSON.parse(response.body)["is_solved"]).to be(true)
+        expect(JSON.parse(response.body)["status"]).to eq("draft")
+      end
+
+      it "自分の公開中の解決済バグの詳細データが返る" do
+        get "/api/v1/bugs/#{own_published_bug.id}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(own_published_bug.id)
+        expect(JSON.parse(response.body)["is_solved"]).to be(true)
+        expect(JSON.parse(response.body)["status"]).to eq("published")
+      end
+
+      it "他人の下書きのバグの詳細データが返されない" do
+        get "/api/v1/bugs/#{draft_bug.id}", headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "他人の公開バグの詳細データが返る" do
+        get "/api/v1/bugs/#{published_bug.id}", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(published_bug.id)
+        expect(JSON.parse(response.body)["status"]).to eq("published")
+      end
+    end
+
+    context "ログインしていない場合" do
+      it "自分の下書きのバグの詳細データが返されない" do
+        get "/api/v1/bugs/#{own_draft_bug.id}"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "自分の公開中の解決済バグの詳細データが返る" do
+        get "/api/v1/bugs/#{own_published_bug.id}"
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(own_published_bug.id)
+        expect(JSON.parse(response.body)["status"]).to eq("published")
+      end
+
+      it "他人の下書きのバグの詳細データが返されない" do
+        get "/api/v1/bugs/#{draft_bug.id}"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "他人の公開バグの詳細データが返る" do
+        get "/api/v1/bugs/#{published_bug.id}"
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["id"]).to eq(published_bug.id)
+        expect(JSON.parse(response.body)["status"]).to eq("published")
+      end
+    end
+
+    it "idが不適切だと 404 エラーが返る" do
+      get "/api/v1/bugs/invalid_id"
+      expect(response).to have_http_status(:not_found)
     end
   end
 
