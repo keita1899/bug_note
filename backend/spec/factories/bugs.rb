@@ -17,5 +17,14 @@ FactoryBot.define do
       create_list(:reference, 2, bug: bug)
       create_list(:environment, 2, bug: bug)
     end
+
+    trait :published do
+      is_solved { true }
+      status { "published" }
+    end
+
+    trait :solved_draft do
+      is_solved { true }
+    end
   end
 end
