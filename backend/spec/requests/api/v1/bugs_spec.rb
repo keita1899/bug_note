@@ -282,7 +282,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
 
         it "他人のバグは削除できない" do
           delete "/api/v1/bugs/#{other_bug.id}", headers: headers
-  
+
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)["message"]).to eq("バグが見つかりません")
           expect(Bug.find_by(id: other_bug.id)).to eq(other_bug)
@@ -297,7 +297,6 @@ RSpec.describe "Api::V1::Bug", type: :request do
           expect(JSON.parse(response.body)["message"]).to eq("バグが見つかりません")
         end
       end
-
     end
 
     context "ログインしていない場合" do
