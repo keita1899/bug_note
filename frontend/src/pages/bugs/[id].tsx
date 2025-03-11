@@ -1,6 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import { Layout } from '@/components/Layout'
+import { DeleteModal } from '@/components/utilities/DeleteModal'
 import { Loading } from '@/components/utilities/Loading'
 import { NoData } from '@/components/utilities/NoData'
 import { Bug } from '@/features/bugs/types/Bug'
@@ -10,16 +14,43 @@ import { EnvironmentTable } from '@/features/bugs/ui/EnvironmentTable'
 import { useAuth } from '@/hooks/useAuth'
 import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
+import { getAuthHeaders } from '@/utils/headers'
 
 const BugDetail = () => {
   const router = useRouter()
   const { id } = router.query
   const { currentUser } = useAuth()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const { data: bug, isPending } = useQuery<Bug>({
     queryKey: ['bug', id],
     queryFn: () => fetcher(API_URLS.BUG.SHOW(String(id))),
+    enabled: !!id,
   })
+
+  const mutation = useMutation({
+    mutationFn: async (id: string) => {
+      try {
+        const res = await axios.delete(API_URLS.BUG.DELETE(id), {
+          headers: getAuthHeaders() ?? {},
+        })
+        return res.data
+      } catch (error) {
+        throw new Error('削除に失敗しました')
+      }
+    },
+    onSuccess: (data) => {
+      toast.success(data.message)
+      router.push('/bugs')
+    },
+    onError: () => toast.error('削除に失敗しました'),
+  })
+
+  const handleDelete = () => {
+    if (id) {
+      mutation.mutate(String(id))
+    }
+  }
 
   return (
     <Layout>
@@ -82,13 +113,26 @@ const BugDetail = () => {
           </div>
           {bug?.user.id === currentUser?.id && (
             <div className="mt-10 flex justify-end gap-2">
-              <button className="btn bg-black px-10 text-white">削除</button>
+              <button
+                className="btn bg-black px-10 text-white"
+                onClick={() => setIsModalOpen(true)}
+              >
+                削除
+              </button>
               <button className="btn btn-primary px-10">編集</button>
             </div>
           )}
         </div>
       ) : (
         <NoData />
+      )}
+      {isModalOpen && (
+        <DeleteModal
+          title="本当に削除しますか？"
+          description="削除すると復元できません"
+          onClose={() => setIsModalOpen(false)}
+          onClick={handleDelete}
+        />
       )}
     </Layout>
   )

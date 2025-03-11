@@ -264,4 +264,47 @@ RSpec.describe "Api::V1::Bug", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/bugs/:id" do
+    let(:bug) { create(:bug, user: user) }
+    let(:other_user) { create(:user) }
+    let(:other_bug) { create(:bug, user: other_user) }
+
+    context "ログインしている場合" do
+      context "バグが存在する場合" do
+        it "バグの削除が成功する" do
+          delete "/api/v1/bugs/#{bug.id}", headers: headers
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)["message"]).to eq("バグを削除しました")
+          expect(Bug).not_to exist(bug.id)
+        end
+
+        it "他人のバグは削除できない" do
+          delete "/api/v1/bugs/#{other_bug.id}", headers: headers
+
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)["message"]).to eq("バグが見つかりません")
+          expect(Bug.find_by(id: other_bug.id)).to eq(other_bug)
+        end
+      end
+
+      context "バグが存在しない場合" do
+        it "バグが見つからないというエラーメッセージを返す" do
+          delete "/api/v1/bugs/#{bug.id + 1}", headers: headers
+
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)["message"]).to eq("バグが見つかりません")
+        end
+      end
+    end
+
+    context "ログインしていない場合" do
+      it "401 エラーが返る" do
+        delete "/api/v1/bugs/#{bug.id}"
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end

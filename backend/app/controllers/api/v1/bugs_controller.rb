@@ -1,7 +1,7 @@
 class Api::V1::BugsController < Api::V1::BaseController
   include Pagination
 
-  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:create, :destroy]
 
   def index
     bugs = Bug.where(status: "published").includes(:user, :environments, :attempts, :references).order(created_at: :desc).page(params[:page] || 1).per(10)
@@ -35,6 +35,21 @@ class Api::V1::BugsController < Api::V1::BaseController
       render json: { message: "バグを保存しました" }, status: :created
     else
       render json: { errors: form.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    bug = Bug.find_by(id: params[:id], user_id: current_user.id)
+
+    if bug.nil?
+      render json: { message: "バグが見つかりません" }, status: :not_found
+      return
+    end
+
+    if bug.destroy
+      render json: { message: "バグを削除しました" }, status: :ok
+    else
+      render json: { message: "バグの削除に失敗しました" }, status: :unprocessable_entity
     end
   end
 
