@@ -9,6 +9,7 @@ export const API_URLS = {
     INDEX: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
     SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
+    DELETE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
 }
