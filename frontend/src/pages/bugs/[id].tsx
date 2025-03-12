@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -119,7 +120,9 @@ const BugDetail = () => {
               >
                 削除
               </button>
-              <button className="btn btn-primary px-10">編集</button>
+              <button className="btn btn-primary px-10">
+                <Link href={`/bugs/${bug.id}/edit`}>編集</Link>
+              </button>
             </div>
           )}
         </div>
