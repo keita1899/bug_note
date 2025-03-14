@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 export const Header = () => {
   const { isFetched, isAuthenticated, signout } = useAuth()
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 shadow-xl">
       <div className="flex-1">
         <Link href="/bugs" className="btn btn-ghost text-xl">
           Bug Note
@@ -18,7 +18,7 @@ export const Header = () => {
               <>
                 <Link href="/bugs/new">
                   <button className="btn btn-circle btn-ghost">
-                    <FaPen className="text-xl" />
+                    <FaPen className="text-xl text-primary" />
                   </button>
                 </Link>
                 <div className="dropdown dropdown-end">
@@ -34,7 +34,9 @@ export const Header = () => {
                     className="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
                   >
                     <li>
-                      <a className="justify-between">プロフィール</a>
+                      <Link href="/mypage" className="justify-between">
+                        マイページ
+                      </Link>
                     </li>
                     <li>
                       <a>設定</a>
