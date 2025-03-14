@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Bug", type: :request do
-  let!(:user) { create(:user) }
+  let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:headers) { user.create_new_auth_token }
 

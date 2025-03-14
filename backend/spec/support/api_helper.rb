@@ -1,6 +1,6 @@
 module ApiHelper
   def response_json
-  JSON.parse(response.body)
+    JSON.parse(response.body)
   end
 end
 
