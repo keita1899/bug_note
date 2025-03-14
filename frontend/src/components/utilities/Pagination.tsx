@@ -38,20 +38,19 @@ export const Pagination = ({
 
   return (
     <div className="flex space-x-2">
-      <button
-        className="btn btn-circle"
-        onClick={() => onChange(1)}
-        disabled={currentPage === 1}
-      >
-        «
-      </button>
-      <button
-        className="btn btn-circle"
-        onClick={() => onChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        ‹
-      </button>
+      {currentPage > 1 && (
+        <button className="btn btn-circle" onClick={() => onChange(1)}>
+          «
+        </button>
+      )}
+      {currentPage > 1 && (
+        <button
+          className="btn btn-circle"
+          onClick={() => onChange(currentPage - 1)}
+        >
+          ‹
+        </button>
+      )}
       {getPageNumbers().map((page, index) =>
         page === '...' ? (
           <span key={index} className="btn btn-disabled btn-circle">
@@ -67,20 +66,19 @@ export const Pagination = ({
           </button>
         ),
       )}
-      <button
-        className="btn btn-circle"
-        onClick={() => onChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        ›
-      </button>
-      <button
-        className="btn btn-circle"
-        onClick={() => onChange(totalPages)}
-        disabled={currentPage === totalPages}
-      >
-        »
-      </button>
+      {currentPage < totalPages && (
+        <button
+          className="btn btn-circle"
+          onClick={() => onChange(currentPage + 1)}
+        >
+          ›
+        </button>
+      )}
+      {currentPage < totalPages && (
+        <button className="btn btn-circle" onClick={() => onChange(totalPages)}>
+          »
+        </button>
+      )}
     </div>
   )
 }

@@ -6,11 +6,18 @@ export const API_URLS = {
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
   },
   BUG: {
-    INDEX: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
+    INDEX: (page: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/bugs?page=${page}`,
     SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
     UPDATE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     DELETE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+  MYPAGE: {
+    BUG: (filter: string, page: number) => {
+      const filterValue = filter === 'all' ? '' : filter
+      return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
+    },
+  },
 }

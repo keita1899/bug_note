@@ -6,21 +6,17 @@ import { NoData } from '@/components/utilities/NoData'
 import { Pagination } from '@/components/utilities/Pagination'
 import { BugList } from '@/features/bugs/components/BugList'
 import { BugListItem } from '@/features/bugs/types/BugListItem'
+import { Meta } from '@/types/Meta'
 import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
-
-type meta = {
-  totalPages: number
-  currentPage: number
-}
 
 const BugListPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
 
-  const { data, isPending } = useQuery<{ bugs: BugListItem[]; meta: meta }>({
-    queryKey: ['bugs'],
-    queryFn: () => fetcher(`${API_URLS.BUG.INDEX}?page=${page}`),
+  const { data, isPending } = useQuery<{ bugs: BugListItem[]; meta: Meta }>({
+    queryKey: ['bugs', page],
+    queryFn: () => fetcher(API_URLS.BUG.INDEX(page)),
   })
 
   const handleChangePage = (page: number) => {
