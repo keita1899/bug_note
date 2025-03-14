@@ -32,7 +32,7 @@ describe('Header', () => {
     expect(screen.getByText('ログイン')).toBeInTheDocument()
   })
 
-  it('認証済みの場合、ユーザーのプロフィールとログアウトが表示されること', () => {
+  it('認証済みの場合、ユーザーのマイページとログアウトが表示されること', () => {
     ;(useAuth as jest.Mock).mockReturnValue({
       isFetched: true,
       isAuthenticated: true,
@@ -54,7 +54,7 @@ describe('Header', () => {
       </AuthContext.Provider>,
     )
 
-    expect(screen.getByText('プロフィール')).toBeInTheDocument()
+    expect(screen.getByText('マイページ')).toBeInTheDocument()
     expect(screen.getByText('設定')).toBeInTheDocument()
     expect(screen.getByText('ログアウト')).toBeInTheDocument()
   })
