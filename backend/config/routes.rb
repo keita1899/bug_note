@@ -11,6 +11,16 @@ Rails.application.routes.draw do
       end
       resources :categories, only: [:index]
       resources :bugs, only: [:index, :show, :create, :update, :destroy]
+      namespace :mypage do
+        resources :bugs, only: [:index] do
+          collection do
+            get "solved", to: "bugs#solved"
+            get "unsolved", to: "bugs#unsolved"
+            get "published", to: "bugs#published"
+            get "draft", to: "bugs#draft"
+          end
+        end
+      end
     end
   end
 
