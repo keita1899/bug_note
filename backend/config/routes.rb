@@ -10,7 +10,9 @@ Rails.application.routes.draw do
         resource :confirmations, only: [:update]
       end
       resources :categories, only: [:index]
-      resources :bugs, only: [:index, :show, :create, :update, :destroy]
+      resources :bugs, only: [:index, :show, :create, :update, :destroy] do
+        resources :comments, only: [:create, :destroy]
+      end
       namespace :mypage do
         resources :bugs, only: [:index] do
           collection do
