@@ -12,6 +12,12 @@ export const API_URLS = {
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
     UPDATE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     DELETE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
+    COMMENT: {
+      CREATE: (bugId: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${bugId}/comments`,
+      DELETE: (bugId: string, commnetId: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${bugId}/comments/${commnetId}`,
+    },
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
   MYPAGE: {

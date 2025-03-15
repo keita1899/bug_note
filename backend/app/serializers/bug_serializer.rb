@@ -5,7 +5,8 @@ class BugSerializer < ActiveModel::Serializer
   has_many :environments, serializer: EnvironmentSerializer
   has_many :attempts, serializer: AttemptSerializer
   has_many :references, serializer: ReferenceSerializer
-  has_one :user, serializer: UserSerializer
+  has_many :comments, serializer: CommentSerializer
+  belongs_to :user, serializer: UserSerializer
 
   def created_at
     object.created_at.strftime("%Y/%m/%d")

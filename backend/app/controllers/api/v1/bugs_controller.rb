@@ -10,12 +10,12 @@ class Api::V1::BugsController < Api::V1::BaseController
 
   def show
     bug = if user_signed_in?
-            Bug.includes(:user, :environments, :attempts, :references).
+            Bug.includes(:user, :environments, :attempts, :references, comments: :user).
               where(id: params[:id]).
               where("user_id = ? OR (user_id != ? AND status = ?)", current_user.id, current_user.id, "published").
               first
           else
-            Bug.includes(:user, :environments, :attempts, :references).
+            Bug.includes(:user, :environments, :attempts, :references, comments: :user).
               where(id: params[:id]).
               where(status: "published").
               first

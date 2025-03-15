@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { BugListItem as BugListItemType } from '../types/BugListItem'
 
@@ -33,8 +34,13 @@ export const BugListItem = ({
           <p className="text-sm text-gray-600">投稿日: {createdAt}</p>
           <div className="mt-4 flex items-center gap-4">
             <div className="avatar">
-              <div className="size-12 rounded-full">
-                {/* <img src={user.image} alt={user.nickname} /> */}
+              <div className="size-10 rounded-full">
+                <Image
+                  src={user.image || '/images/default-avatar.png'}
+                  alt="User Avatar"
+                  width={20}
+                  height={20}
+                />
               </div>
             </div>
             <p className="font-medium">{user.nickname}</p>
