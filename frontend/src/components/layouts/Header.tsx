@@ -1,9 +1,10 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { FaPen } from 'react-icons/fa'
 import { useAuth } from '@/hooks/useAuth'
 
 export const Header = () => {
-  const { isFetched, isAuthenticated, signout } = useAuth()
+  const { currentUser, isFetched, isAuthenticated, signout } = useAuth()
   return (
     <div className="navbar bg-base-100 shadow-xl">
       <div className="flex-1">
@@ -27,7 +28,15 @@ export const Header = () => {
                     role="button"
                     className="avatar btn btn-circle btn-ghost"
                   >
-                    <div className="w-10 rounded-full"></div>
+                    <div className="w-10 rounded-full">
+                      <Image
+                        src={currentUser?.image || '/images/default-avatar.png'}
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                      />
+                    </div>
                   </div>
                   <ul
                     tabIndex={0}
