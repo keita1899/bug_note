@@ -1,6 +1,7 @@
 import { Attempt } from './Attempt'
 import { Environment } from './Environment'
 import { Reference } from './Reference'
+import { Comment } from '@/features/comment/types/Comment'
 
 export type Bug = {
   id: number
@@ -17,11 +18,12 @@ export type Bug = {
   status: 'draft' | 'published'
   isSolved: boolean
   createdAt: string
-  updatedAt: string
+  fromToday: string
   user: {
     id: number
     image: string
     name: string
     nickname: string
   }
+  comments: Comment[]
 }
