@@ -138,6 +138,19 @@ RSpec.describe "Api::V1::Bug", type: :request do
         expect(response_json["status"]).to eq("published")
       end
 
+      it "自分の公開中の解決済バグの詳細データが返り、コメント一覧も含まれる" do
+        comment1 = create(:comment, bug: published_bug, user: user)
+        comment2 = create(:comment, bug: published_bug, user: other_user)
+
+        get "/api/v1/bugs/#{published_bug.id}", headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response_json["id"]).to eq(published_bug.id)
+        expect(response_json["status"]).to eq("published")
+        expect(response_json["comments"].size).to eq(2)
+        expect(response_json["comments"].map {|c| c["id"] }).to contain_exactly(comment1.id, comment2.id)
+      end
+
       it "他人の下書きのバグの詳細データが返されない" do
         get "/api/v1/bugs/#{other_draft_bug.id}", headers: headers
         expect(response).to have_http_status(:not_found)
