@@ -27,7 +27,7 @@ class Api::V1::Mypage::BugsController < Api::V1::BaseController
 
     def render_bugs(filters = {})
       bugs = current_user.bugs.where(filters).
-               includes(:user, :environments, :attempts, :references).
+               includes(:user).
                order(created_at: :desc).
                page(params[:page] || 1).
                per(10)

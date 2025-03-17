@@ -4,7 +4,7 @@ class Api::V1::BugsController < Api::V1::BaseController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    bugs = Bug.where(status: "published").includes(:user, :environments, :attempts, :references).order(created_at: :desc).page(params[:page] || 1).per(10)
+    bugs = Bug.where(status: "published").includes(:user).order(created_at: :desc).page(params[:page] || 1).per(10)
     render json: bugs, each_serializer: BugSerializer, status: :ok, meta: pagination(bugs), adapter: :json
   end
 
