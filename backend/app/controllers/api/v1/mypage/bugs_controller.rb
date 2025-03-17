@@ -31,6 +31,6 @@ class Api::V1::Mypage::BugsController < Api::V1::BaseController
                order(created_at: :desc).
                page(params[:page] || 1).
                per(10)
-      render json: bugs, each_serializer: BugSerializer, status: :ok, meta: pagination(bugs), adapter: :json
+      render json: bugs, each_serializer: BugListSerializer, status: :ok, meta: pagination(bugs), adapter: :json
     end
 end

@@ -1,0 +1,2 @@
+class BugListSerializer < BaseBugSerializer
+end
