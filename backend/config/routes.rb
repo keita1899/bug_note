@@ -6,6 +6,9 @@ Rails.application.routes.draw do
       namespace :current do
         resource :user, only: [:show]
       end
+      resources :users, only: [:show] do
+        get :bugs, on: :member
+      end
       namespace :user do
         resource :confirmations, only: [:update]
       end

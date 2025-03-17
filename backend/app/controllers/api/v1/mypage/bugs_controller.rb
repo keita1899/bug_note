@@ -27,10 +27,10 @@ class Api::V1::Mypage::BugsController < Api::V1::BaseController
 
     def render_bugs(filters = {})
       bugs = current_user.bugs.where(filters).
-               includes(:user, :environments, :attempts, :references).
+               includes(:user).
                order(created_at: :desc).
                page(params[:page] || 1).
                per(10)
-      render json: bugs, each_serializer: BugSerializer, status: :ok, meta: pagination(bugs), adapter: :json
+      render json: bugs, each_serializer: BugListSerializer, status: :ok, meta: pagination(bugs), adapter: :json
     end
 end

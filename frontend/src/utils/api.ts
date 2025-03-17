@@ -5,6 +5,11 @@ export const API_URLS = {
     CONFIRMATION: `${process.env.NEXT_PUBLIC_API_URL}/user/confirmations`,
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
   },
+  USER: {
+    SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+    BUG: (id: string, page: number) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bugs?page=${page}`,
+  },
   BUG: {
     INDEX: (page: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}/bugs?page=${page}`,

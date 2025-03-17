@@ -33,16 +33,18 @@ export const BugListItem = ({
           <h3 className="card-title text-xl font-semibold">{title}</h3>
           <p className="text-sm text-gray-600">投稿日: {createdAt}</p>
           <div className="mt-4 flex items-center gap-4">
-            <div className="avatar">
-              <div className="size-10 rounded-full">
-                <Image
-                  src={user.image || '/images/default-avatar.png'}
-                  alt="User Avatar"
-                  width={20}
-                  height={20}
-                />
+            <Link href={`/users/${user.id}`}>
+              <div className="avatar">
+                <div className="size-10 rounded-full">
+                  <Image
+                    src={user.image || '/images/default-avatar.png'}
+                    alt="User Avatar"
+                    width={20}
+                    height={20}
+                  />
+                </div>
               </div>
-            </div>
+            </Link>
             <p className="font-medium">{user.nickname}</p>
           </div>
         </div>
