@@ -5,6 +5,7 @@ export type BugListItem = {
   status: 'draft' | 'published'
   createdAt: string
   user: {
+    id: number
     nickname: string
     image: string
   }
