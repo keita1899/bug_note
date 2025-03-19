@@ -35,7 +35,7 @@ const BugDetail = () => {
     enabled: !!id,
   })
 
-  const mutation = useMutation({
+  const deleteBugMutation = useMutation({
     mutationFn: async (id: string) => {
       try {
         const res = await axios.delete(API_URLS.BUG.DELETE(id), {
@@ -53,9 +53,9 @@ const BugDetail = () => {
     onError: () => toast.error('削除に失敗しました'),
   })
 
-  const handleDelete = () => {
+  const handleDeleteBug = () => {
     if (id) {
-      mutation.mutate(String(id))
+      deleteBugMutation.mutate(String(id))
     }
   }
 
@@ -252,7 +252,7 @@ const BugDetail = () => {
           title="本当に削除しますか？"
           description="削除すると復元できません"
           onClose={() => setIsModalOpen(false)}
-          onClick={handleDelete}
+          onClick={handleDeleteBug}
         />
       )}
     </Layout>
