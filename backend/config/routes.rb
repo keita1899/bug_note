@@ -7,7 +7,11 @@ Rails.application.routes.draw do
         resource :user, only: [:show]
       end
       resources :users, only: [:show] do
-        get :bugs, on: :member
+        member do
+          get :bugs, to: "users#bugs"
+          post :follow, to: "follows#create"
+          delete :unfollow, to: "follows#destroy"
+        end
       end
       namespace :user do
         resource :confirmations, only: [:update]

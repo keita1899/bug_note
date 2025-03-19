@@ -5,7 +5,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def show
     user = User.find(params[:id])
-    render json: user, serializer: UserSerializer, status: :ok
+    render json: user, serializer: UserDetailSerializer, status: :ok
   end
 
   def bugs
