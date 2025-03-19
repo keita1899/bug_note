@@ -1,5 +1,5 @@
 class BaseBugSerializer < ActiveModel::Serializer
-  attributes :id, :title, :is_solved, :status, :created_at, :from_today
+  attributes :id, :title, :is_solved, :status, :created_at, :from_today, :like_count, :is_liked
 
   belongs_to :user, serializer: UserSerializer
 
@@ -30,4 +30,14 @@ class BaseBugSerializer < ActiveModel::Serializer
 
     "#{seconds}秒前"
   end
+
+  def like_count
+    object.likes.count
+  end
+
+  # rubocop:disable Naming/PredicateName
+  def is_liked
+    object.likes.exists?(user_id: current_user.id) if current_user
+  end
+  # rubocop:enable Naming/PredicateName
 end
