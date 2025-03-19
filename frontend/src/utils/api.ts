@@ -27,12 +27,18 @@ export const API_URLS = {
       DELETE: (bugId: string, commnetId: string) =>
         `${process.env.NEXT_PUBLIC_API_URL}/bugs/${bugId}/comments/${commnetId}`,
     },
-  },
-  CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-  MYPAGE: {
-    BUG: (filter: string, page: number) => {
-      const filterValue = filter === 'all' ? '' : filter
-      return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
+    LIKE: {
+      CREATE: (id: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}/likes`,
+      DELETE: (id: string) =>
+        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}/likes`,
+    },
+    CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+    MYPAGE: {
+      BUG: (filter: string, page: number) => {
+        const filterValue = filter === 'all' ? '' : filter
+        return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
+      },
     },
   },
 }
