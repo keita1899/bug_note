@@ -32,10 +32,4 @@ class Api::V1::LikesController < Api::V1::BaseController
       render json: { error: "いいねの削除に失敗しました" }, status: :not_found
     end
   end
-
-  private
-
-    def liked_by_current_user?
-      @bug.likes.exists?(user: current_user)
-    end
 end
