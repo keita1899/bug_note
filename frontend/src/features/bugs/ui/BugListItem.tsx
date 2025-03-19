@@ -1,10 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { BugListItem as BugListItemType } from '../types/BugListItem'
+import LikeButton from '@/components/utilities/LikeButton'
 
 export const BugListItem = ({
   id,
   title,
+  likeCount,
+  isLiked,
   isSolved,
   status,
   createdAt,
@@ -46,6 +49,7 @@ export const BugListItem = ({
               </div>
             </Link>
             <p className="font-medium">{user.nickname}</p>
+            <LikeButton bugId={id} likeCount={likeCount} isLiked={isLiked} />
           </div>
         </div>
       </div>

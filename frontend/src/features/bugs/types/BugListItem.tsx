@@ -1,6 +1,8 @@
 export type BugListItem = {
-  id: number
+  id: string
   title: string
+  likeCount: number
+  isLiked: boolean
   isSolved: boolean
   status: 'draft' | 'published'
   createdAt: string
