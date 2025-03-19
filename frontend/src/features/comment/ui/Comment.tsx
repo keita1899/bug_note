@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { Comment as CommentType } from '../types/Comment'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -23,13 +24,15 @@ export const Comment = ({ comment, onDelete }: CommentProps) => {
 
       <div className="flex items-center gap-2">
         {!isCurrentUser && (
-          <Image
-            src={comment.user?.image || '/images/default-avatar.png'}
-            alt={comment.user?.nickname || 'User Avatar'}
-            width={30}
-            height={30}
-            className="rounded-full"
-          />
+          <Link href={`/users/${comment.user.id}`}>
+            <Image
+              src={comment.user?.image || '/images/default-avatar.png'}
+              alt={comment.user?.nickname || 'User Avatar'}
+              width={30}
+              height={30}
+              className="rounded-full"
+            />
+          </Link>
         )}
 
         <div
@@ -43,13 +46,15 @@ export const Comment = ({ comment, onDelete }: CommentProps) => {
         </div>
 
         {isCurrentUser && (
-          <Image
-            src={comment.user?.image || '/images/default-avatar.png'}
-            alt={comment.user?.nickname || 'User Avatar'}
-            width={30}
-            height={30}
-            className="rounded-full"
-          />
+          <Link href={`/users/${comment.user.id}`}>
+            <Image
+              src={comment.user?.image || '/images/default-avatar.png'}
+              alt={comment.user?.nickname || 'User Avatar'}
+              width={30}
+              height={30}
+              className="rounded-full"
+            />
+          </Link>
         )}
       </div>
 
