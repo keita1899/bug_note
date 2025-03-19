@@ -9,6 +9,10 @@ export const API_URLS = {
     SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
     BUG: (id: string, page: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bugs?page=${page}`,
+    FOLLOW: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/follow`,
+    UNFOLLOW: (id: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/unfollow`,
   },
   BUG: {
     INDEX: (page: number) =>

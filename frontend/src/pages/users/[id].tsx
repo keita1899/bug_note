@@ -1,28 +1,35 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
 import { Layout } from '@/components/Layout'
 import { Loading } from '@/components/utilities/Loading'
 import { NoData } from '@/components/utilities/NoData'
 import { Pagination } from '@/components/utilities/Pagination'
 import { BugList } from '@/features/bugs/components/BugList'
 import { BugListItem } from '@/features/bugs/types/BugListItem'
+import { FollowButton } from '@/features/user/components/FollowButton'
+import { useAuth } from '@/hooks/useAuth'
 import { Meta } from '@/types/Meta'
+import { User } from '@/types/User'
 import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
+import { getAuthHeaders } from '@/utils/headers'
 
-type User = {
-  id: number
-  image: string
-  name: string
+type UserDetailType = User & {
+  followersCount: number
+  followingCount: number
 }
 
 const UserDetail = () => {
   const router = useRouter()
   const { id } = router.query
   const page = 'page' in router.query ? Number(router.query.page) : 1
+  const { currentUser } = useAuth()
 
-  const { data: user, isPending: isUserPending } = useQuery<User>({
+  const { data: user, isPending: isUserPending } = useQuery<UserDetailType>({
     queryKey: ['user', id],
     queryFn: () => fetcher(API_URLS.USER.SHOW(String(id))),
     enabled: !!id,
@@ -41,24 +48,89 @@ const UserDetail = () => {
     router.push(`/users/${id}/bugs?page=${page}`)
   }
 
+  const queryClient = useQueryClient()
+
+  const follow = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post(
+        API_URLS.USER.FOLLOW(String(id)),
+        {},
+        { headers: getAuthHeaders() ?? {} },
+      )
+      return res.data
+    },
+    onSuccess: (data) => {
+      toast.success(data.message)
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['user', id],
+      })
+    },
+  })
+
+  const unfollow = useMutation({
+    mutationFn: async () => {
+      const res = await axios.delete(API_URLS.USER.UNFOLLOW(String(id)), {
+        headers: getAuthHeaders() ?? {},
+      })
+      return res.data
+    },
+    onSuccess: (data) => {
+      toast.success(data.message)
+      queryClient.invalidateQueries({ queryKey: ['user', id] })
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['user', id],
+      })
+    },
+  })
+
   return (
     <Layout>
       {isUserPending || isBugPending ? (
         <Loading />
       ) : (
         <div className="mx-auto my-12 w-full max-w-full p-4 md:max-w-4xl lg:max-w-3xl">
-          <div className="flex items-center gap-4">
-            <Image
-              src={user?.image || '/images/default-avatar.png'}
-              alt={user?.name || 'User Avatar'}
-              width={96}
-              height={96}
-              className="rounded-full"
-              priority
-            />
-            <div>
-              <h1 className="text-3xl font-bold">{user?.name}</h1>
-              <button className="btn btn-primary mt-4">フォローする</button>
+          <div className="mx-auto max-w-xl">
+            <div className="flex items-center gap-4">
+              <Image
+                src={user?.image || '/images/default-avatar.png'}
+                alt={user?.name || 'User Avatar'}
+                width={96}
+                height={96}
+                className="rounded-full"
+                priority
+              />
+              <div>
+                <h1 className="text-3xl font-bold">{user?.name}</h1>
+                <div className="mt-4 text-right">
+                  {currentUser?.id !== user?.id && user && (
+                    <FollowButton
+                      isFollowing={user.isFollowing}
+                      isLoading={follow.isPending || unfollow.isPending}
+                      onFollow={() => follow.mutate()}
+                      onUnfollow={() => unfollow.mutate()}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-center gap-4 text-lg">
+              <Link href={`/users/${id}/follows`}>
+                <div className="cursor-pointer underline">
+                  フォロー{' '}
+                  <span className="font-bold">{user?.followingCount}</span>
+                </div>
+              </Link>
+              <Link href={`/users/${id}/follows`}>
+                <div className="cursor-pointer underline">
+                  フォロワー{' '}
+                  <span className="font-bold">{user?.followersCount}</span>
+                </div>
+              </Link>
             </div>
           </div>
 
