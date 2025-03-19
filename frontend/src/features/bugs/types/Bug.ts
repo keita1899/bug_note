@@ -4,7 +4,7 @@ import { Reference } from './Reference'
 import { Comment } from '@/features/comment/types/Comment'
 
 export type Bug = {
-  id: number
+  id: string
   title: string
   content: string
   errorMessage: string
@@ -17,6 +17,8 @@ export type Bug = {
   etc: string
   status: 'draft' | 'published'
   isSolved: boolean
+  isLiked: boolean
+  likeCount: number
   createdAt: string
   fromToday: string
   user: {

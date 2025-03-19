@@ -7,6 +7,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { Layout } from '@/components/Layout'
 import { DeleteModal } from '@/components/utilities/DeleteModal'
+import LikeButton from '@/components/utilities/LikeButton'
 import { Loading } from '@/components/utilities/Loading'
 import { NoData } from '@/components/utilities/NoData'
 import { Bug } from '@/features/bugs/types/Bug'
@@ -34,7 +35,7 @@ const BugDetail = () => {
     enabled: !!id,
   })
 
-  const mutation = useMutation({
+  const deleteBugMutation = useMutation({
     mutationFn: async (id: string) => {
       try {
         const res = await axios.delete(API_URLS.BUG.DELETE(id), {
@@ -52,11 +53,46 @@ const BugDetail = () => {
     onError: () => toast.error('削除に失敗しました'),
   })
 
-  const handleDelete = () => {
+  const handleDeleteBug = () => {
     if (id) {
-      mutation.mutate(String(id))
+      deleteBugMutation.mutate(String(id))
     }
   }
+
+  const likeMutation = useMutation({
+    mutationFn: async ({
+      bugId,
+      isLiked,
+    }: {
+      bugId: string
+      isLiked: boolean
+    }) => {
+      if (isLiked) {
+        const response = await axios.delete(API_URLS.BUG.LIKE.DELETE(bugId), {
+          headers: getAuthHeaders(),
+        })
+        return response.data
+      } else {
+        const response = await axios.post(
+          API_URLS.BUG.LIKE.CREATE(bugId),
+          {},
+          {
+            headers: getAuthHeaders(),
+          },
+        )
+        return response.data
+      }
+    },
+    onSuccess: (data) => {
+      toast.success(data.message)
+      queryClient.invalidateQueries({
+        queryKey: ['bug', id],
+      })
+    },
+    onError: (error) => {
+      console.error('Error toggling like:', error)
+    },
+  })
 
   const commentMutation = useMutation({
     mutationFn: async (content: CommentFormData) => {
@@ -112,6 +148,10 @@ const BugDetail = () => {
 
   const handleDeleteComment = (commentId: string) => {
     deleteCommentMutation.mutate(commentId)
+  }
+
+  const handleToggleLike = (bugId: string, isLiked: boolean) => {
+    likeMutation.mutate({ bugId, isLiked })
   }
 
   return (
@@ -185,6 +225,13 @@ const BugDetail = () => {
                   </button>
                 </div>
               )}
+              <LikeButton
+                bugId={bug.id}
+                likeCount={bug.likeCount}
+                isLiked={bug.isLiked}
+                isLoading={likeMutation.isPending}
+                onToggleLike={handleToggleLike}
+              />
             </div>
           </div>
           <div className="card mt-6 bg-base-100 shadow-lg">
@@ -205,7 +252,7 @@ const BugDetail = () => {
           title="本当に削除しますか？"
           description="削除すると復元できません"
           onClose={() => setIsModalOpen(false)}
-          onClick={handleDelete}
+          onClick={handleDeleteBug}
         />
       )}
     </Layout>

@@ -18,6 +18,8 @@ Rails.application.routes.draw do
       end
       resources :categories, only: [:index]
       resources :bugs, only: [:index, :show, :create, :update, :destroy] do
+        post "likes", to: "likes#create"
+        delete "likes", to: "likes#destroy"
         resources :comments, only: [:create, :destroy]
       end
       namespace :mypage do
