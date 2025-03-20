@@ -32,7 +32,7 @@ class BaseBugSerializer < ActiveModel::Serializer
   end
 
   def like_count
-    object.likes.count
+    object.likes_count
   end
 
   # rubocop:disable Naming/PredicateName
