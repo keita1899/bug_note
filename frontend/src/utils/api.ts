@@ -33,12 +33,12 @@ export const API_URLS = {
       DELETE: (id: string) =>
         `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}/likes`,
     },
-    CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-    MYPAGE: {
-      BUG: (filter: string, page: number) => {
-        const filterValue = filter === 'all' ? '' : filter
-        return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
-      },
+  },
+  CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+  MYPAGE: {
+    BUG: (filter: string, page: number) => {
+      const filterValue = filter === 'all' ? '' : filter
+      return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
     },
   },
 }

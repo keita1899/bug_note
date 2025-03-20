@@ -36,6 +36,10 @@ const tabs: Tab[] = [
     label: '公開',
     value: 'published',
   },
+  {
+    label: 'いいね',
+    value: 'liked',
+  },
 ]
 
 const Mypage = () => {

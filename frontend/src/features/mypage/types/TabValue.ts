@@ -1,1 +1,7 @@
-export type TabValue = 'all' | 'unsolved' | 'solved' | 'draft' | 'published'
+export type TabValue =
+  | 'all'
+  | 'unsolved'
+  | 'solved'
+  | 'draft'
+  | 'published'
+  | 'liked'
