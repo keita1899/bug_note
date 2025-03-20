@@ -29,6 +29,7 @@ Rails.application.routes.draw do
             get "unsolved", to: "bugs#unsolved"
             get "published", to: "bugs#published"
             get "draft", to: "bugs#draft"
+            get "liked", to: "bugs#liked"
           end
         end
       end
