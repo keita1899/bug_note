@@ -37,8 +37,7 @@ class BaseBugSerializer < ActiveModel::Serializer
 
   # rubocop:disable Naming/PredicateName
   def is_liked
-    liked_user_ids = object.likes.pluck(:user_id)
-    liked_user_ids.include?(current_user.id) if current_user
+    object.likes.exists?(user_id: current_user.id) if current_user
   end
   # rubocop:enable Naming/PredicateName
 end
