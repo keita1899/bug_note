@@ -116,4 +116,28 @@ RSpec.describe "Api::V1::Mypage::Bugs", type: :request do
       end
     end
   end
+
+  describe "GET /mypage/bugs/likes" do
+    let!(:other_user) { create(:user) }
+    let!(:liked_bug) { create(:bug, user: other_user, status: "published") }
+    let!(:like) { create(:like, user: user, bug: liked_bug) }
+
+    context "ログインしている場合" do
+      it "いいねしたバグを取得できる" do
+        get liked_api_v1_mypage_bugs_path, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response_json["bugs"].size).to eq(1)
+        expect(response_json["bugs"].first["id"]).to eq(liked_bug.id)
+      end
+    end
+
+    context "ログインしていない場合" do
+      it "認証エラーが発生すること" do
+        get liked_api_v1_mypage_bugs_path
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
