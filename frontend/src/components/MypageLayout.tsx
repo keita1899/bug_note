@@ -28,7 +28,7 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
               <Link href="">メールアドレス変更</Link>
             </li>
             <li className={isActive('/mypage/account') ? 'text-primary' : ''}>
-              <Link href="">アカウント削除</Link>
+              <Link href="/mypage/account-delete">アカウント削除</Link>
             </li>
           </ul>
         </div>

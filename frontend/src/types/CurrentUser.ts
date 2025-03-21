@@ -3,4 +3,4 @@ export type CurrentUser = {
   name: string
   image: string
   email: string
-}
+} | null
