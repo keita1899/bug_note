@@ -63,4 +63,41 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/auth" do
+    let!(:user) { create(:user, password: "password123") }
+    let(:headers) { user.create_new_auth_token }
+    let(:valid_params) { { password: "password123" } }
+    let(:invalid_params) { { password: "wrongpassword" } }
+
+    context "ログインしている場合" do
+      it "パスワードが正しければアカウントの削除が成功する" do
+        expect {
+          delete api_v1_user_registration_path, params: valid_params, headers: headers, as: :json
+        }.to change { User.count }.by(-1)
+
+        expect(response).to have_http_status(:ok)
+        expect(response_json["message"]).to include("アカウントが削除されました")
+      end
+
+      it "パスワードが間違っていればアカウントの削除が失敗し、422 エラーが返る" do
+        expect {
+          delete api_v1_user_registration_path, params: invalid_params, headers: headers, as: :json
+        }.not_to change { User.count }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response_json["error"]).to include("パスワードが正しくありません")
+      end
+    end
+
+    context "ログインしていない場合" do
+      it "401 エラーが返る" do
+        expect {
+          delete api_v1_user_registration_path, params: valid_params, as: :json
+        }.not_to change { User.count }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
