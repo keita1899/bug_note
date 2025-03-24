@@ -6,14 +6,14 @@ export const API_URLS = {
     CONFIRMATION: `${process.env.NEXT_PUBLIC_API_URL}/user/confirmations`,
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
   },
+  CURRENT: {
+    FOLLOW: `${process.env.NEXT_PUBLIC_API_URL}/current/user/follow`,
+    UNFOLLOW: `${process.env.NEXT_PUBLIC_API_URL}/current/user/unfollow`,
+  },
   USER: {
     SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
     BUG: (id: string, page: number) =>
       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bugs?page=${page}`,
-    FOLLOW: (id: string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/follow`,
-    UNFOLLOW: (id: string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/unfollow`,
   },
   BUG: {
     INDEX: (page: number) =>
