@@ -1,4 +1,4 @@
-class Api::V1::FollowsController < Api::V1::BaseController
+class Api::V1::Current::FollowsController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :prevent_duplicate_follow, only: [:create]
 
