@@ -6,13 +6,18 @@ Rails.application.routes.draw do
         registrations: "api/v1/auth/registrations",
       }
       namespace :current do
-        resource :user, only: [:show]
+        resource :user, only: [:show] do
+          collection do
+            post :follow, to: "follows#create"
+            delete :unfollow, to: "follows#destroy"
+          end
+        end
       end
       resources :users, only: [:show] do
         member do
           get :bugs, to: "users#bugs"
-          post :follow, to: "follows#create"
-          delete :unfollow, to: "follows#destroy"
+          get :followers, to: "users#followers"
+          get :following, to: "users#following"
         end
       end
       namespace :user do

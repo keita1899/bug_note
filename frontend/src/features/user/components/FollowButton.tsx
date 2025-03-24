@@ -13,7 +13,11 @@ export const FollowButton = ({
 }: FollowButtonProps) => {
   return (
     <button
-      className={`btn ${isFollowing ? 'btn-error' : 'btn-primary'}`}
+      className={`group btn w-24 p-0.5 text-xs transition-colors duration-300 md:w-32 md:p-2 md:text-base ${
+        isFollowing
+          ? 'bg-black text-white hover:bg-red-600'
+          : 'border border-black bg-white text-black hover:bg-gray-100'
+      }`}
       disabled={isLoading}
       onClick={isFollowing ? onUnfollow : onFollow}
     >
@@ -23,7 +27,10 @@ export const FollowButton = ({
           role="status"
         ></span>
       ) : isFollowing ? (
-        'フォロー解除'
+        <>
+          <span className="group-hover:hidden">フォロー中</span>
+          <span className="hidden group-hover:inline">フォロー解除</span>
+        </>
       ) : (
         'フォロー'
       )}

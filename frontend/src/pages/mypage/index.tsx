@@ -15,7 +15,7 @@ import { Meta } from '@/types/Meta'
 import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
 
-const tabs: Tab[] = [
+const tabs: Tab<TabValue>[] = [
   {
     label: `全て`,
     value: 'all',
@@ -70,7 +70,11 @@ const Mypage = () => {
   return (
     <MypageLayout>
       <div className="mt-8 flex justify-center">
-        <Tabs tabs={tabs} selectedTab={selectedTab} onClick={setSelectedTab} />
+        <Tabs<TabValue>
+          tabs={tabs}
+          selectedTab={selectedTab}
+          onClick={setSelectedTab}
+        />
       </div>
 
       <div className="mt-4 text-right font-bold text-gray-600">

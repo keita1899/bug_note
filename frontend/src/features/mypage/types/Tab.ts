@@ -1,6 +1,4 @@
-import { TabValue } from './TabValue'
-
-export type Tab = {
+export type Tab<T extends string> = {
   label: string
-  value: TabValue
+  value: T
 }

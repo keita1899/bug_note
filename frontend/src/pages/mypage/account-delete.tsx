@@ -65,10 +65,8 @@ const AccountDelete = () => {
   const onSubmit: SubmitHandler<DeleteAccountFormValues> = (
     data: DeleteAccountFormValues,
   ) => {
-    console.log('onSubmit called')
     setPasswordToDelete(data.password)
     setIsModalOpen(true)
-    console.log(isModalOpen)
   }
 
   const handleDeleteConfirm = () => {

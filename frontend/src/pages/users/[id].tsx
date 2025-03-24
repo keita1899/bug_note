@@ -51,10 +51,10 @@ const UserDetail = () => {
   const queryClient = useQueryClient()
 
   const follow = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (userId: number) => {
       const res = await axios.post(
-        API_URLS.USER.FOLLOW(String(id)),
-        {},
+        API_URLS.CURRENT.FOLLOW,
+        { id: userId },
         { headers: getAuthHeaders() ?? {} },
       )
       return res.data
@@ -70,8 +70,9 @@ const UserDetail = () => {
   })
 
   const unfollow = useMutation({
-    mutationFn: async () => {
-      const res = await axios.delete(API_URLS.USER.UNFOLLOW(String(id)), {
+    mutationFn: async (userId: number) => {
+      const res = await axios.delete(API_URLS.CURRENT.UNFOLLOW, {
+        data: { id: userId },
         headers: getAuthHeaders() ?? {},
       })
       return res.data
@@ -86,6 +87,14 @@ const UserDetail = () => {
       })
     },
   })
+
+  const handleFollow = (userId: number) => {
+    follow.mutate(userId)
+  }
+
+  const handleUnfollow = (userId: number) => {
+    unfollow.mutate(userId)
+  }
 
   return (
     <Layout>
@@ -110,8 +119,8 @@ const UserDetail = () => {
                     <FollowButton
                       isFollowing={user.isFollowing}
                       isLoading={follow.isPending || unfollow.isPending}
-                      onFollow={() => follow.mutate()}
-                      onUnfollow={() => unfollow.mutate()}
+                      onFollow={() => handleFollow(user.id)}
+                      onUnfollow={() => handleUnfollow(user.id)}
                     />
                   )}
                 </div>
@@ -119,13 +128,13 @@ const UserDetail = () => {
             </div>
 
             <div className="mt-4 flex justify-center gap-4 text-lg">
-              <Link href={`/users/${id}/follows`}>
+              <Link href={`/users/${id}/follows?tab=following`}>
                 <div className="cursor-pointer underline">
                   フォロー{' '}
                   <span className="font-bold">{user?.followingCount}</span>
                 </div>
               </Link>
-              <Link href={`/users/${id}/follows`}>
+              <Link href={`/users/${id}/follows?tab=followers`}>
                 <div className="cursor-pointer underline">
                   フォロワー{' '}
                   <span className="font-bold">{user?.followersCount}</span>
