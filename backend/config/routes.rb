@@ -16,6 +16,8 @@ Rails.application.routes.draw do
       resources :users, only: [:show] do
         member do
           get :bugs, to: "users#bugs"
+          get :followers, to: "users#followers"
+          get :following, to: "users#following"
         end
       end
       namespace :user do
