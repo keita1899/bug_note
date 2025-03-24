@@ -5,3 +5,5 @@ export type TabValue =
   | 'draft'
   | 'published'
   | 'liked'
+
+export type FollowTabValue = 'followers' | 'following'
