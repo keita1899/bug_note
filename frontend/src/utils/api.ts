@@ -5,6 +5,7 @@ export const API_URLS = {
     DELETE_ACCOUNT: `${process.env.NEXT_PUBLIC_API_URL}/auth`,
     CONFIRMATION: `${process.env.NEXT_PUBLIC_API_URL}/user/confirmations`,
     CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
+    PASSWORD: `${process.env.NEXT_PUBLIC_API_URL}/auth/password`,
   },
   CURRENT: {
     FOLLOW: `${process.env.NEXT_PUBLIC_API_URL}/current/user/follow`,

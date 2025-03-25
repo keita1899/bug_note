@@ -40,7 +40,7 @@ const Signin = () => {
       setCurrentUser(response.data)
       setIsAuthenticated(true)
       toast.success('ログインしました')
-      router.push('/')
+      router.push('/mypage')
     },
     onError: (error: AxiosError<{ errors: string[] }>) => {
       console.log(error)
