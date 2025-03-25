@@ -24,8 +24,12 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
             <li className={isActive('/mypage/profile') ? 'text-primary' : ''}>
               <Link href="">プロフィール</Link>
             </li>
-            <li className={isActive('/mypage/pass') ? 'text-primary' : ''}>
-              <Link href="">パスワード変更</Link>
+            <li
+              className={
+                isActive('/mypage/password-change') ? 'text-primary' : ''
+              }
+            >
+              <Link href="/mypage/password-change">パスワード変更</Link>
             </li>
             <li className={isActive('/mypage/email') ? 'text-primary' : ''}>
               <Link href="">メールアドレス変更</Link>
