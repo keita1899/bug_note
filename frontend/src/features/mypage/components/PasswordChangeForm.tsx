@@ -8,7 +8,7 @@ import { FormField } from '@/features/auth/ui/FormField'
 import { FormHeading } from '@/features/auth/ui/FormHeading'
 import { SubmitButton } from '@/features/auth/ui/SubmitButton'
 
-type AccountDeleteFormProps = {
+type PasswordChangeFormProps = {
   register: UseFormRegister<ChangePasswordFormValues>
   handleSubmit: UseFormHandleSubmit<ChangePasswordFormValues>
   errors: FieldErrors<ChangePasswordFormValues>
@@ -22,7 +22,7 @@ export const PasswordChangeForm = ({
   errors,
   onSubmit,
   isLoading,
-}: AccountDeleteFormProps) => {
+}: PasswordChangeFormProps) => {
   return (
     <div className="mt-10 flex justify-center">
       <div className="w-96 rounded-lg bg-white p-6 shadow-lg">
