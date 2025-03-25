@@ -12,7 +12,7 @@ type FormFieldProps<T extends FieldValues> = {
   type: 'text' | 'email' | 'password'
   register: UseFormRegister<T>
   errors: FieldErrors<T>
-  placeholder: string
+  placeholder?: string
 }
 
 export const FormField = <T extends FieldValues>({
