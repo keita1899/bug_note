@@ -6,6 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
   include DeviseTokenAuth::Concerns::User
+  before_create :set_default_name, if: :name_blank?
 
   has_many :bugs, dependent: :destroy
   has_many :comments, dependent: :destroy
@@ -33,5 +34,15 @@ class User < ApplicationRecord
 
   def following?(user)
     following.include?(user)
+  end
+  private
+
+    def set_default_name
+      self.name = SecureRandom.hex(4)
+    end
+
+    def name_blank?
+      self.name.blank?
+    end
   end
 end
