@@ -6,6 +6,16 @@ FactoryBot.define do
     confirmed_at { Time.current }
     name { "テストユーザー" }
     nickname { "ニックネーム" }
-    image { "https://placehold.jp/150x150.png" }
+
+    trait :with_image do
+      after(:build) do |user|
+        file_path = Rails.root.join("spec", "fixtures", "images", "valid_image.jpg")
+        user.image.attach(
+          io: File.open(file_path),
+          filename: "valid_image.jpg",
+          content_type: "image/jpeg",
+        )
+      end
+    end
   end
 end
