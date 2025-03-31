@@ -46,5 +46,9 @@ export const API_URLS = {
       const filterValue = filter === 'all' ? '' : filter
       return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
     },
+    PROFILE: {
+      SHOW: `${process.env.NEXT_PUBLIC_API_URL}/mypage/profile`,
+      UPDATE: `${process.env.NEXT_PUBLIC_API_URL}/mypage/profile`,
+    },
   },
 }
