@@ -41,6 +41,7 @@ Rails.application.routes.draw do
             get "liked", to: "bugs#liked"
           end
         end
+        resource :profile, only: [:show, :update]
       end
     end
   end

@@ -4,9 +4,15 @@ ja:
       bug: バグ
     attributes:
       user:
+        name: 名前
+        nickname: ニックネーム
+        image: 画像
         email: メールアドレス
         password: パスワード
         password_confirmation: パスワード確認用
+        github_url: GitHubのURL
+        website_url: WebサイトのURL
+        bio: 自己紹介
       bug:
         title: タイトル
         content: 内容
