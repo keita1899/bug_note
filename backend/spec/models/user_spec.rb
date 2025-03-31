@@ -121,6 +121,11 @@ RSpec.describe User, type: :model do
         expect(user.errors[:name]).to include("を入力してください")
       end
 
+      it "ニックネームが空の場合成功する" do
+        user.nickname = nil
+        expect(user).to be_valid
+      end
+
       it "自己紹介が空の場合成功する" do
         user.bio = nil
         expect(user).to be_valid
@@ -140,6 +145,12 @@ RSpec.describe User, type: :model do
         user.name = "a" * 256
         expect(user).to be_invalid
         expect(user.errors[:name]).to include("は255文字以内で入力してください")
+      end
+
+      it "ニックネームが255文字を超える場合失敗する" do
+        user.nickname = "a" * 256
+        expect(user).to be_invalid
+        expect(user.errors[:nickname]).to include("は255文字以内で入力してください")
       end
 
       it "自己紹介が500文字を超える場合失敗する" do

@@ -36,6 +36,9 @@ class User < ApplicationRecord
   validates :bio, length: {
     maximum: 500,
   }, if: :profile_update?
+  validates :nickname, length: {
+    maximum: 255,
+  }, if: :profile_update?
   validates :github_url,
             length: { maximum: 255 },
             format: { with: URI::DEFAULT_PARSER.make_regexp, message: "は有効なURLではありません" },
