@@ -42,7 +42,7 @@ describe('Header', () => {
     render(
       <AuthContext.Provider
         value={{
-          currentUser: { id: 1, name: 'Test User', email: 'test@example.com' },
+          currentUser: { id: 1, name: 'Test User', imageUrl: 'test.com' },
           isAuthenticated: true,
           isFetched: true,
           setCurrentUser: jest.fn(),
@@ -55,7 +55,6 @@ describe('Header', () => {
     )
 
     expect(screen.getByText('マイページ')).toBeInTheDocument()
-    expect(screen.getByText('設定')).toBeInTheDocument()
     expect(screen.getByText('ログアウト')).toBeInTheDocument()
   })
 
@@ -71,7 +70,7 @@ describe('Header', () => {
     render(
       <AuthContext.Provider
         value={{
-          currentUser: { id: 1, name: 'Test User', email: 'test@example.com' },
+          currentUser: { id: 1, name: 'Test User', imageUrl: 'test.com' },
           isAuthenticated: true,
           isFetched: true,
           setCurrentUser: jest.fn(),

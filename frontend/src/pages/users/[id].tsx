@@ -105,12 +105,13 @@ const UserDetail = () => {
           <div className="mx-auto max-w-xl">
             <div className="flex items-center gap-4">
               <Image
-                src={user?.image || '/images/default-avatar.png'}
+                src={user?.imageUrl || '/images/default-avatar.png'}
                 alt={user?.name || 'User Avatar'}
                 width={96}
                 height={96}
                 className="rounded-full"
                 priority
+                unoptimized
               />
               <div>
                 <h1 className="text-3xl font-bold">{user?.name}</h1>

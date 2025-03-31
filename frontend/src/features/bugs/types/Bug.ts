@@ -23,7 +23,7 @@ export type Bug = {
   fromToday: string
   user: {
     id: number
-    image: string
+    imageUrl: string
     name: string
     nickname: string
   }

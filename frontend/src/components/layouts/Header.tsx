@@ -30,11 +30,14 @@ export const Header = () => {
                   >
                     <div className="w-10 rounded-full">
                       <Image
-                        src={currentUser?.image || '/images/default-avatar.png'}
+                        src={
+                          currentUser?.imageUrl || '/images/default-avatar.png'
+                        }
                         alt="User Avatar"
                         width={40}
                         height={40}
                         className="rounded-full"
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -43,12 +46,14 @@ export const Header = () => {
                     className="menu dropdown-content rounded-box menu-sm z-[1] mt-3 w-52 bg-base-100 p-2 shadow"
                   >
                     <li>
+                      <span className="border-b font-bold">
+                        {currentUser?.name}
+                      </span>
+                    </li>
+                    <li>
                       <Link href="/mypage" className="justify-between">
                         マイページ
                       </Link>
-                    </li>
-                    <li>
-                      <a>設定</a>
                     </li>
                     <li>
                       <button onClick={signout}>ログアウト</button>

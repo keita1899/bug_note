@@ -6,6 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
   include DeviseTokenAuth::Concerns::User
+
   before_create :set_default_name, if: :name_blank?
 
   has_many :bugs, dependent: :destroy
@@ -16,6 +17,7 @@ class User < ApplicationRecord
   has_many :followers, through: :passive_follows, source: :follower
   has_many :likes, dependent: :destroy
   has_many :liked_bugs, through: :likes, source: :bug
+  has_one_attached :image
 
   PASSWORD_COMPLEXITY_REGEX = /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,128}\z/
 
@@ -35,6 +37,18 @@ class User < ApplicationRecord
   def following?(user)
     following.include?(user)
   end
+
+  def as_json(options = {})
+    super(options.merge(
+      only: [:id, :email, :name, :nickname],
+      methods: [:image_url],
+    ))
+  end
+
+  def image_url
+    image.attached? ? Rails.application.routes.url_helpers.rails_blob_url(image) : nil
+  end
+
   private
 
     def set_default_name

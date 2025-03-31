@@ -40,10 +40,11 @@ export const BugListItem = ({
               <div className="avatar">
                 <div className="size-10 rounded-full">
                   <Image
-                    src={user.image || '/images/default-avatar.png'}
+                    src={user.imageUrl || '/images/default-avatar.png'}
                     alt="User Avatar"
                     width={20}
                     height={20}
+                    unoptimized
                   />
                 </div>
               </div>
