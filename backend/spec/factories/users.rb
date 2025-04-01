@@ -6,6 +6,9 @@ FactoryBot.define do
     confirmed_at { Time.current }
     name { "テストユーザー" }
     nickname { "ニックネーム" }
+    bio { "自己紹介" }
+    github_url { "https://github.com/testuser" }
+    website_url { "https://testuser.com" }
 
     trait :with_image do
       after(:build) do |user|
