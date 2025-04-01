@@ -13,7 +13,7 @@ RSpec.describe "Api::V1::Users", type: :request do
       expect(response).to have_http_status(:ok)
       expect(response_json["id"]).to eq(user.id)
       expect(response_json["name"]).to eq(user.name)
-      expect(response_json["image"]).to eq(user.image)
+      expect(response_json["image_url"]).to eq(user.image_url)
       expect(response_json["nickname"]).to eq(user.nickname)
     end
 
