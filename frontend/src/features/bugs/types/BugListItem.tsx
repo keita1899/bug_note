@@ -9,6 +9,7 @@ export type BugListItem = {
   user: {
     id: number
     nickname: string
-    image: string
+    imageUrl: string
+    name: string
   }
 }

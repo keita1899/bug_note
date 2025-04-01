@@ -5,6 +5,9 @@ import { toast } from 'react-toastify'
 import Confirmation from '@/pages/auth/confirmation'
 import { AuthProvider } from '@/providers/AuthProvider'
 
+jest.mock('@/utils', () => ({
+  fetcher: jest.fn(),
+}))
 jest.mock('axios')
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),

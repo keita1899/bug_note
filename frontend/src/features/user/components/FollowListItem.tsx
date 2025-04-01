@@ -22,11 +22,12 @@ export const FollowListItem = ({
     <li className="mb-4 flex h-[64px] items-center justify-between rounded-md bg-base-100 p-4 shadow-xl">
       <div className="flex grow items-center">
         <Image
-          src={user.image || '/images/default-avatar.png'}
+          src={user.imageUrl || '/images/default-avatar.png'}
           alt={user.name}
           width={40}
           height={40}
           className="mr-4 rounded-full"
+          unoptimized
         />
         <Link href={`/users/${user.id}`} className="text-sm font-medium">
           {user.name || 'aaaaaaaaaaaaaaa'}

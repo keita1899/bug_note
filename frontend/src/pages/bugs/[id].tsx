@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -165,7 +166,7 @@ const BugDetail = () => {
               {currentUser?.id === bug.user.id && (
                 <BugStatus isSolved={bug.isSolved} status={bug.status} />
               )}
-              <p className="text-sm text-gray-500">{`${bug?.fromToday} に投稿`}</p>
+              <p className="text-right text-sm text-gray-500">{`${bug?.fromToday} に投稿`}</p>
               <h2 className="card-title text-3xl">{bug?.title}</h2>
               <div className="my-4 space-y-20">
                 <EnvironmentTable environments={bug?.environments || []} />
@@ -208,8 +209,32 @@ const BugDetail = () => {
                 <BugSection title="その他" content={bug?.etc} />
               </div>
 
-              <div className="mt-4 text-sm text-gray-500">
-                {`作成者: ${bug?.user.nickname}`}
+              <div className="mt-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Link href={`/users/${bug.user.id}`}>
+                    <Image
+                      src={bug.user.imageUrl || '/images/default-avatar.png'}
+                      alt={`${bug.user.nickname}のアバター`}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                      unoptimized
+                    />
+                  </Link>
+                  <Link
+                    href={`/users/${bug.user.id}`}
+                    className="text-sm text-gray-600 hover:text-gray-900 hover:underline"
+                  >
+                    {bug.user.nickname}
+                  </Link>
+                </div>
+                <LikeButton
+                  bugId={bug.id}
+                  likeCount={bug.likeCount}
+                  isLiked={bug.isLiked}
+                  isLoading={likeMutation.isPending}
+                  onToggleLike={handleToggleLike}
+                />
               </div>
 
               {bug?.user.id === currentUser?.id && (
@@ -225,13 +250,6 @@ const BugDetail = () => {
                   </button>
                 </div>
               )}
-              <LikeButton
-                bugId={bug.id}
-                likeCount={bug.likeCount}
-                isLiked={bug.isLiked}
-                isLoading={likeMutation.isPending}
-                onToggleLike={handleToggleLike}
-              />
             </div>
           </div>
           <div className="card mt-6 bg-base-100 shadow-lg">

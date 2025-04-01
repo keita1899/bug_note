@@ -1,6 +1,5 @@
 export type CurrentUser = {
   id: number
   name: string
-  image: string
-  email: string
+  imageUrl: string
 } | null

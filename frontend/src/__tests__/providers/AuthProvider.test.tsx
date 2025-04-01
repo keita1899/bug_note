@@ -1,20 +1,20 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useContext } from 'react'
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/context/AuthContext'
 import { AuthProvider } from '@/providers/AuthProvider'
+import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
-import { getAuthHeaders } from '@/utils/headers'
 
-jest.mock('axios')
+jest.mock('@/utils', () => ({
+  fetcher: jest.fn(),
+}))
 jest.mock('react-toastify', () => ({
   toast: {
     success: jest.fn(),
   },
 }))
-
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }))
@@ -54,7 +54,7 @@ describe('AuthProvider', () => {
 
   it('localStorage に認証情報がある場合 fetchCurrentUser が呼ばれること', async () => {
     const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' }
-    ;(axios.get as jest.Mock).mockResolvedValue({ data: mockUser })
+    ;(fetcher as jest.Mock).mockResolvedValue(mockUser)
 
     localStorage.setItem('access-token', 'test-token')
     localStorage.setItem('client', 'test-client')
@@ -78,9 +78,7 @@ describe('AuthProvider', () => {
     )
 
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith(API_URLS.AUTH.CURRENT_USER, {
-        headers: getAuthHeaders(),
-      })
+      expect(fetcher).toHaveBeenCalledWith(API_URLS.AUTH.CURRENT_USER)
     })
 
     expect(

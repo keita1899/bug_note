@@ -2,6 +2,10 @@ import { render, screen } from '@testing-library/react'
 import EmailSent from '@/pages/auth/email-sent'
 import { AuthProvider } from '@/providers/AuthProvider'
 
+jest.mock('@/utils', () => ({
+  fetcher: jest.fn(),
+}))
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }))

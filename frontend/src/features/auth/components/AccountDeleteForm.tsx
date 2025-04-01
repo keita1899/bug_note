@@ -24,7 +24,7 @@ export const AccountDeleteForm = ({
   isLoading,
 }: AccountDeleteFormProps) => {
   return (
-    <div className="mt-10 flex justify-center">
+    <div className="flex justify-center">
       <div className="w-96 rounded-lg bg-white p-6 shadow-lg">
         <FormHeading
           title="アカウント削除"

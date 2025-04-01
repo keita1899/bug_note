@@ -5,7 +5,7 @@ export type Comment = {
   createdAt: string
   user: {
     id: number
-    image: string
+    imageUrl: string
     nickname: string
   }
 }

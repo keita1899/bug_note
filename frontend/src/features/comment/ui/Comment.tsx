@@ -26,7 +26,7 @@ export const Comment = ({ comment, onDelete }: CommentProps) => {
         {!isCurrentUser && (
           <Link href={`/users/${comment.user.id}`}>
             <Image
-              src={comment.user?.image || '/images/default-avatar.png'}
+              src={comment.user?.imageUrl || '/images/default-avatar.png'}
               alt={comment.user?.nickname || 'User Avatar'}
               width={30}
               height={30}
@@ -48,11 +48,12 @@ export const Comment = ({ comment, onDelete }: CommentProps) => {
         {isCurrentUser && (
           <Link href={`/users/${comment.user.id}`}>
             <Image
-              src={comment.user?.image || '/images/default-avatar.png'}
+              src={comment.user?.imageUrl || '/images/default-avatar.png'}
               alt={comment.user?.nickname || 'User Avatar'}
               width={30}
               height={30}
               className="rounded-full"
+              unoptimized
             />
           </Link>
         )}

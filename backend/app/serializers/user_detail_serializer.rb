@@ -1,5 +1,5 @@
 class UserDetailSerializer < BaseUserSerializer
-  attributes :followers_count, :following_count, :is_following
+  attributes :bio, :github_url, :website_url, :followers_count, :following_count, :is_following
 
   def followers_count
     object.followers.count

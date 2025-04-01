@@ -1,4 +1,5 @@
 require "rails_helper"
+require "tempfile"
 
 RSpec.describe User, type: :model do
   let!(:user) { build(:user) }
@@ -107,6 +108,162 @@ RSpec.describe User, type: :model do
         expect(user).to be_invalid
         expect(user.errors[:password_confirmation]).to include("とパスワードの入力が一致しません")
       end
+    end
+
+    context "プロフィール更新時" do
+      before do
+        user.profile_update = true
+      end
+
+      it "名前が空の場合失敗する" do
+        user.name = nil
+        expect(user).to be_invalid
+        expect(user.errors[:name]).to include("を入力してください")
+      end
+
+      it "ニックネームが空の場合成功する" do
+        user.nickname = nil
+        expect(user).to be_valid
+      end
+
+      it "自己紹介が空の場合成功する" do
+        user.bio = nil
+        expect(user).to be_valid
+      end
+
+      it "Github URLが空の場合成功する" do
+        user.github_url = nil
+        expect(user).to be_valid
+      end
+
+      it "WebサイトURLが空の場合成功する" do
+        user.website_url = nil
+        expect(user).to be_valid
+      end
+
+      it "名前が255文字を超える場合失敗する" do
+        user.name = "a" * 256
+        expect(user).to be_invalid
+        expect(user.errors[:name]).to include("は255文字以内で入力してください")
+      end
+
+      it "ニックネームが255文字を超える場合失敗する" do
+        user.nickname = "a" * 256
+        expect(user).to be_invalid
+        expect(user.errors[:nickname]).to include("は255文字以内で入力してください")
+      end
+
+      it "自己紹介が500文字を超える場合失敗する" do
+        user.bio = "a" * 501
+        expect(user).to be_invalid
+        expect(user.errors[:bio]).to include("は500文字以内で入力してください")
+      end
+
+      it "Github URLが255文字を超える場合失敗する" do
+        user.github_url = "a" * 256
+        expect(user).to be_invalid
+        expect(user.errors[:github_url]).to include("は255文字以内で入力してください")
+      end
+
+      it "WebサイトURLが255文字を超える場合失敗する" do
+        user.website_url = "a" * 256
+        expect(user).to be_invalid
+        expect(user.errors[:website_url]).to include("は255文字以内で入力してください")
+      end
+
+      it "Github URLがURL形式でない場合失敗する" do
+        user.github_url = "invalid_url"
+        expect(user).to be_invalid
+        expect(user.errors[:github_url]).to include("は有効なURLではありません")
+      end
+
+      it "WebサイトURLがURL形式でない場合失敗する" do
+        user.website_url = "invalid_url"
+        expect(user).to be_invalid
+        expect(user.errors[:website_url]).to include("は有効なURLではありません")
+      end
+    end
+
+    context "トークン更新時" do
+      it "名前が空でも成功する" do
+        user.name = nil
+        expect(user).to be_valid
+      end
+    end
+  end
+
+  describe "画像のバリデーション" do
+    before do
+      user.profile_update = true
+    end
+
+    def attach_test_image(extension:, content_type:, size: 1.megabyte)
+      Tempfile.create(["test_image", ".#{extension}"]) do |file|
+        file.binmode
+        if content_type == "image/gif"
+          file.write("GIF89a")
+        else
+          file.write("\xFF\xD8\xFF\xE0") if content_type == "image/jpeg"
+          file.truncate(size)
+        end
+        file.rewind
+
+        user.image.attach(
+          io: file,
+          filename: "test_image.#{extension}",
+          content_type: content_type,
+        )
+      end
+    end
+
+    it "JPEG画像をアップロードできる" do
+      attach_test_image(extension: "jpeg", content_type: "image/jpeg")
+      expect(user).to be_valid
+    end
+
+    it "JPG画像をアップロードできる" do
+      attach_test_image(extension: "jpg", content_type: "image/jpg")
+      expect(user).to be_valid
+    end
+
+    it "PNG画像をアップロードできる" do
+      attach_test_image(extension: "png", content_type: "image/png")
+      expect(user).to be_valid
+    end
+
+    it "WebP画像をアップロードできる" do
+      attach_test_image(extension: "webp", content_type: "image/webp")
+      expect(user).to be_valid
+    end
+
+    it "画像が空の場合でも成功する" do
+      user.image = nil
+      expect(user).to be_valid
+    end
+
+    it "GIF画像をアップロードできない" do
+      attach_test_image(extension: "gif", content_type: "image/gif")
+      expect(user).to be_invalid
+      expect(user.errors[:image]).to include("はJPEG、JPG、PNG、WebP形式のみ使用できます")
+    end
+
+    it "3MBの画像はアップロードできる" do
+      attach_test_image(
+        extension: "jpg",
+        content_type: "image/jpeg",
+        size: 3.megabytes,
+      )
+      expect(user).to be_valid
+    end
+
+    it "3MBを超えるサイズの画像はアップロードできない" do
+      attach_test_image(
+        extension: "jpg",
+        content_type: "image/jpeg",
+        size: 4.megabytes,
+      )
+      expect(user).to be_invalid
+      expect(user.errors[:image]).to include("ファイル サイズは 3MB 未満にする必要があります (現在のサイズは 4MB)")
     end
   end
 end

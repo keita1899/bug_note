@@ -1,11 +1,10 @@
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { AuthContext } from '@/context/AuthContext'
 import { CurrentUser } from '@/types/CurrentUser'
+import { fetcher } from '@/utils'
 import { API_URLS } from '@/utils/api'
-import { getAuthHeaders } from '@/utils/headers'
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
@@ -15,11 +14,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchCurrentUser = async () => {
     try {
-      const response = await axios.get(API_URLS.AUTH.CURRENT_USER, {
-        headers: getAuthHeaders() ?? {},
-      })
-
-      setCurrentUser(response.data)
+      const data = await fetcher(API_URLS.AUTH.CURRENT_USER)
+      setCurrentUser(data)
       setIsAuthenticated(true)
       setIsFetched(true)
     } catch (error) {

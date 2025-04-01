@@ -12,9 +12,13 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="flex min-h-screen flex-col bg-base-200">
       <Header />
-      <div className="flex flex-1 p-6">
-        <div className="w-64 rounded-md bg-white p-4 shadow-lg">
-          <ul className="menu p-2 font-bold">
+      <div className="flex flex-1 flex-col gap-6 p-6 md:flex-row">
+        <main className="w-full md:order-2 md:max-w-5xl lg:max-w-6xl">
+          {children}
+        </main>
+
+        <div className="w-full rounded-md bg-white p-4 shadow-lg md:order-1 md:w-64">
+          <ul className="menu flex flex-col p-2 font-bold">
             <li className={isActive('/mypage') ? 'text-primary' : ''}>
               <Link href="/mypage">バグ</Link>
             </li>
@@ -22,7 +26,7 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
               <Link href="/mypage/follows">フォロー・フォロワー</Link>
             </li>
             <li className={isActive('/mypage/profile') ? 'text-primary' : ''}>
-              <Link href="">プロフィール</Link>
+              <Link href="/mypage/profile">プロフィール</Link>
             </li>
             <li
               className={
@@ -43,10 +47,6 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
             </li>
           </ul>
         </div>
-
-        <main className="mx-auto flex-1 p-4 md:max-w-4xl lg:max-w-3xl">
-          {children}
-        </main>
       </div>
       <Footer />
     </div>
