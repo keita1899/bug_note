@@ -87,18 +87,27 @@ class User < ApplicationRecord
       self.name.blank?
     end
 
-    def validate_image
+    def validate_image_size_and_type
       if image.blob.byte_size > MAX_IMAGE_SIZE
         errors.add(
           :image,
           "ファイル サイズは 3MB 未満にする必要があります (現在のサイズは #{(image.blob.byte_size.to_f / 1.megabyte).round}MB)",
         )
-        image.purge
-        return
+        return false
       end
 
       unless ALLOWED_CONTENT_TYPES.include?(image.content_type)
         errors.add(:image, "はJPEG、JPG、PNG、WebP形式のみ使用できます")
+        return false
+      end
+
+      true
+    end
+
+    def validate_image
+      return unless image.attached?
+
+      unless validate_image_size_and_type
         image.purge
       end
     end
