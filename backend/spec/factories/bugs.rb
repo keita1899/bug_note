@@ -26,5 +26,15 @@ FactoryBot.define do
     trait :solved_draft do
       is_solved { true }
     end
+
+    trait :with_tags do
+      transient do
+        tags_count { 2 }
+      end
+
+      after(:create) do |bug, evaluator|
+        create_list(:bug_tag, evaluator.tags_count, bug: bug)
+      end
+    end
   end
 end
