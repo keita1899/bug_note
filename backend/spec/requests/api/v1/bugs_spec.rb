@@ -8,9 +8,15 @@ RSpec.describe "Api::V1::Bug", type: :request do
   describe "GET /api/v1/bugs" do
     let!(:bugs) { create_list(:bug, 25, user: user, status: "published") }
     let(:draft_bug) { create(:bug, user: user) }
+    let!(:tags) { create_list(:tag, 3) }
 
     context "ログインしている場合" do
       before do
+        bugs.each do |bug|
+          tags.each do |tag|
+            create(:bug_tag, bug: bug, tag: tag)
+          end
+        end
         get "/api/v1/bugs", headers: headers, params: { page: page }
       end
 
@@ -33,6 +39,13 @@ RSpec.describe "Api::V1::Bug", type: :request do
         it "レスポンスにページネーションのメタデータが含まれる" do
           expect(response_json["meta"]["total_pages"]).to eq(3)
           expect(response_json["meta"]["current_page"]).to eq(1)
+        end
+
+        it "各バグにタグ情報が含まれている" do
+          response_json["bugs"].each do |bug|
+            expect(bug["tags"]).to be_present
+            expect(bug["tags"].size).to eq(3)
+          end
         end
       end
 
@@ -112,8 +125,16 @@ RSpec.describe "Api::V1::Bug", type: :request do
     let(:draft_bug) { create(:bug, user: user) }
     let(:solved_draft_bug) { create(:bug, :solved_draft, user: user) }
     let(:published_bug) { create(:bug, :published, user: user) }
+    let!(:tags) { create_list(:tag, 3) }
 
     context "ログインしている場合" do
+      before do
+        published_bug.bug_tags.destroy_all
+        tags.each do |tag|
+          create(:bug_tag, bug: published_bug, tag: tag)
+        end
+      end
+
       it "自分の下書きの未解決バグの詳細データが返る" do
         get "/api/v1/bugs/#{draft_bug.id}", headers: headers
         expect(response).to have_http_status(:ok)
@@ -130,12 +151,13 @@ RSpec.describe "Api::V1::Bug", type: :request do
         expect(response_json["status"]).to eq("draft")
       end
 
-      it "自分の公開中の解決済バグの詳細データが返る" do
+      it "自分の公開中の解決済バグの詳細データとタグが返る" do
         get "/api/v1/bugs/#{published_bug.id}", headers: headers
         expect(response).to have_http_status(:ok)
         expect(response_json["id"]).to eq(published_bug.id)
         expect(response_json["is_solved"]).to be(true)
         expect(response_json["status"]).to eq("published")
+        expect(response_json["tags"].size).to eq(3)
       end
 
       it "自分の公開中の解決済バグの詳細データが返り、コメント一覧も含まれる" do
@@ -197,6 +219,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
   end
 
   describe "POST /api/v1/bugs" do
+    let!(:tags) { create_list(:tag, 3) }
     let(:valid_params) do
       {
         title: "Example Bug Title",
@@ -217,6 +240,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         references: [
           { url: "http://example.com" },
         ],
+        tags: tags.map(&:id),
       }
     end
 
@@ -234,6 +258,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         environments: [],
         attempts: [],
         references: [],
+        tags: [],
       }
     end
 
@@ -241,7 +266,25 @@ RSpec.describe "Api::V1::Bug", type: :request do
       it "正しい値が入力された場合、バグの登録が成功する" do
         expect {
           post "/api/v1/bugs", params: valid_params, headers: headers, as: :response_json
+        }.to change { Bug.count }.by(1).
+               and change { BugTag.count }.by(3)
+
+        expect(response).to have_http_status(:created)
+        expect(response_json["message"]).to eq("バグを保存しました")
+
+        bug = Bug.last
+        expect(bug.tags.count).to eq(3)
+        expect(bug.tags.pluck(:id)).to match_array(tags.map(&:id))
+      end
+
+      it "タグなしでバグを登録できる" do
+        params_without_tags = valid_params.except(:tags)
+        expect {
+          post "/api/v1/bugs", params: params_without_tags, headers: headers, as: :response_json
         }.to change { Bug.count }.by(1)
+
+        bug = Bug.last
+        expect(bug.bug_tags).to be_empty
 
         expect(response).to have_http_status(:created)
         expect(response_json["message"]).to eq("バグを保存しました")
@@ -269,6 +312,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
   describe "UPDATE /api/v1/bugs/:id" do
     let(:bug) { create(:bug, user: user) }
     let(:other_bug) { create(:bug, user: other_user) }
+    let!(:tags) { create_list(:tag, 3) }
 
     let(:valid_params) do
       {
@@ -290,6 +334,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         references: [
           { url: "http://example.com" },
         ],
+        tags: tags.map(&:id),
       }
     end
 
@@ -307,22 +352,47 @@ RSpec.describe "Api::V1::Bug", type: :request do
         environments: [],
         attempts: [],
         references: [],
+        tags: [],
       }
     end
 
     context "ログインしている場合" do
       context "バグが存在する場合" do
         it "正しい値を入力した場合バグの更新が成功する" do
-          patch "/api/v1/bugs/#{bug.id}", params: valid_params, headers: headers
+          expect {
+            patch "/api/v1/bugs/#{bug.id}", params: valid_params, headers: headers
+          }.to change { BugTag.count }.by(3)
 
           expect(response).to have_http_status(:ok)
           expect(response_json["message"]).to eq("バグを更新しました")
+          expect(bug.reload.tags.pluck(:id)).to match_array(tags.map(&:id))
         end
 
         it "間違った値を入力した場合バグの更新が失敗し、422 エラーを返す" do
           patch "/api/v1/bugs/#{bug.id}", params: invalid_params, headers: headers
 
           expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it "タグを更新できる" do
+          create(:bug_tag, bug: bug, tag: create(:tag))
+          new_tags = [tags.first.id, tags.second.id]
+          update_params = valid_params.merge(tags: new_tags)
+
+          patch "/api/v1/bugs/#{bug.id}", params: update_params, headers: headers
+
+          expect(response).to have_http_status(:ok)
+          expect(bug.reload.tags.pluck(:id)).to match_array(new_tags)
+        end
+
+        it "タグを削除できる" do
+          create(:bug_tag, bug: bug, tag: create(:tag))
+          update_params = valid_params.merge(tags: [])
+
+          patch "/api/v1/bugs/#{bug.id}", params: update_params, headers: headers
+
+          expect(response).to have_http_status(:ok)
+          expect(bug.reload.tags.count).to eq(0)
         end
 
         it "他人のバグは更新できない" do
