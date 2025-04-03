@@ -1,6 +1,7 @@
 import { Attempt } from './Attempt'
 import { Environment } from './Environment'
 import { Reference } from './Reference'
+import { Tag } from './Tag'
 import { Comment } from '@/features/comment/types/Comment'
 
 export type Bug = {
@@ -28,4 +29,5 @@ export type Bug = {
     nickname: string
   }
   comments: Comment[]
+  tags: Tag[]
 }
