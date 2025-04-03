@@ -4,7 +4,7 @@ class BugForm
   include BugFormValidations
 
   attr_accessor :title, :error_message, :content, :expected_behavior, :solution, :cause, :etc, :is_solved, :status, :environments, :attempts, :references,
-                :user, :bug
+                :user, :bug, :tags
 
   def initialize(bug_params, user, bug = nil)
     @user = user
@@ -21,6 +21,7 @@ class BugForm
     @environments = bug_params[:environments] || []
     @attempts = bug_params[:attempts] || []
     @references = bug_params[:references] || []
+    @tags = bug_params[:tags] || []
   end
 
   def save
@@ -31,6 +32,7 @@ class BugForm
       update_environments(@bug)
       update_attempts(@bug)
       update_references(@bug)
+      update_tags(@bug)
       @bug
     end
   rescue ActiveRecord::RecordInvalid
@@ -80,5 +82,14 @@ class BugForm
       end
 
       bug.references.import(references_data, on_duplicate_key_ignore: true) if references_data.present?
+    end
+
+    def update_tags(bug)
+      bug.bug_tags.destroy_all
+      tag_data = @tags.map do |tag_id|
+        { bug_id: bug.id, tag_id: tag_id }
+      end
+
+      BugTag.import(tag_data) if tag_data.present?
     end
 end

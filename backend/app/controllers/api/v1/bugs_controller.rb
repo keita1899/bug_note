@@ -77,7 +77,8 @@ class Api::V1::BugsController < Api::V1::BaseController
         :title, :error_message, :content, :expected_behavior, :solution, :cause, :etc, :is_solved, :status,
         environments: [:category, :name, :version],
         attempts: [:content],
-        references: [:url]
+        references: [:url],
+        tags: []
       )
     end
 end
