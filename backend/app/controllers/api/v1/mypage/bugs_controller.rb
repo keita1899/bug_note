@@ -24,7 +24,7 @@ class Api::V1::Mypage::BugsController < Api::V1::BaseController
   end
 
   def liked
-    bugs = current_user.liked_bugs.includes(:user).order("likes.created_at DESC").page(params[:page] || 1).per(10)
+    bugs = current_user.liked_bugs.includes(:user, :tags).order("likes.created_at DESC").page(params[:page] || 1).per(10)
 
     render json: bugs, each_serializer: BugListSerializer, status: :ok, meta: pagination(bugs), adapter: :json
   end
@@ -33,6 +33,7 @@ class Api::V1::Mypage::BugsController < Api::V1::BaseController
 
     def render_bugs(filters = {})
       bugs = current_user.bugs.where(filters).
+               includes(:tags).
                order(created_at: :desc).
                page(params[:page] || 1).
                per(10)
