@@ -57,6 +57,16 @@ RSpec.describe BugForm, type: :model do
         bug_form.references = [{ url: "" }]
         expect(bug_form).to be_valid
       end
+
+      it "タグを3つまで選択できる" do
+        bug_form.tags = [1, 2, 3]
+        expect(bug_form).to be_valid
+      end
+
+      it "タグが空の場合は成功する" do
+        bug_form.tags = []
+        expect(bug_form).to be_valid
+      end
     end
 
     context "入力が間違っている場合" do
@@ -106,6 +116,12 @@ RSpec.describe BugForm, type: :model do
         bug_form.references = [{ url: "invalid-url" }]
         expect(bug_form).to be_invalid
         expect(bug_form.errors[:'references.url']).to include("有効なURLを入力してください")
+      end
+
+      it "タグの数が3つを超えると失敗する" do
+        bug_form.tags = [1, 2, 3, 4]
+        expect(bug_form).to be_invalid
+        expect(bug_form.errors[:tags]).to include("は3つまでしか選択できません")
       end
     end
   end
