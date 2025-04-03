@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_25_100318) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_01_064044) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,6 +48,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_25_100318) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bug_id"], name: "index_attempts_on_bug_id"
+  end
+
+  create_table "bug_tags", force: :cascade do |t|
+    t.bigint "bug_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bug_id", "tag_id"], name: "index_bug_tags_on_bug_id_and_tag_id", unique: true
+    t.index ["bug_id"], name: "index_bug_tags_on_bug_id"
+    t.index ["tag_id"], name: "index_bug_tags_on_tag_id"
   end
 
   create_table "bugs", force: :cascade do |t|
@@ -122,6 +132,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_25_100318) do
     t.index ["bug_id"], name: "index_references_on_bug_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -153,6 +170,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_25_100318) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "attempts", "bugs"
+  add_foreign_key "bug_tags", "bugs"
+  add_foreign_key "bug_tags", "tags"
   add_foreign_key "bugs", "users"
   add_foreign_key "comments", "bugs"
   add_foreign_key "comments", "users"

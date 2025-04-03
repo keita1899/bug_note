@@ -8,6 +8,7 @@ module BugFormValidations
     validate :status_published_if_unsolved
     validate :valid_references_urls
     validate :valid_environments_name_and_version
+    validate :valid_max_three_tags
   end
 
   private
@@ -46,6 +47,12 @@ module BugFormValidations
         if env[:version].present? && env[:version].length > 255
           errors.add(:'environments.version', "環境のバージョンは255文字以内で入力してください")
         end
+      end
+    end
+
+    def valid_max_three_tags
+      if @tags&.length.to_i > 3
+        errors.add(:tags, "は3つまでしか選択できません")
       end
     end
 end

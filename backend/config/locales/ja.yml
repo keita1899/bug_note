@@ -2,6 +2,7 @@ ja:
   activerecord:
     models:
       bug: バグ
+      tag: タグ
     attributes:
       user:
         name: 名前
@@ -29,6 +30,7 @@ ja:
           content: 試したこと
         references:
           url: 参考リンク
+        tag: タグ
   errors:
     messages:
       invalid_email: 無効なメールアドレスです

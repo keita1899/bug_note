@@ -41,6 +41,10 @@ export const bugSchema = z
     etc: z.string().optional(),
     is_solved: z.boolean(),
     status: z.enum(['draft', 'published']).optional(),
+    tags: z
+      .array(z.number())
+      .max(3, 'タグは3つまでしか選択できません')
+      .optional(),
   })
   .refine(
     (data) => {

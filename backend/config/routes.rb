@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         resource :confirmations, only: [:update]
       end
       resources :categories, only: [:index]
+      resources :tags, only: [:index]
       resources :bugs, only: [:index, :show, :create, :update, :destroy] do
         post "likes", to: "likes#create"
         delete "likes", to: "likes#destroy"

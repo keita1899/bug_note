@@ -1,3 +1,5 @@
+import { Tag } from './Tag'
+
 export type BugListItem = {
   id: string
   title: string
@@ -12,4 +14,5 @@ export type BugListItem = {
     imageUrl: string
     name: string
   }
+  tags: Tag[]
 }

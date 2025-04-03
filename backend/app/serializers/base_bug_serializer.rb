@@ -2,6 +2,7 @@ class BaseBugSerializer < ActiveModel::Serializer
   attributes :id, :title, :is_solved, :status, :created_at, :from_today, :like_count, :is_liked
 
   belongs_to :user, serializer: UserSerializer
+  has_many :tags, serializer: TagSerializer
 
   def created_at
     object.created_at.strftime("%Y/%m/%d")
