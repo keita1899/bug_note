@@ -41,6 +41,7 @@ export const API_URLS = {
     },
   },
   CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
+  TAGS: `${process.env.NEXT_PUBLIC_API_URL}/tags`,
   MYPAGE: {
     BUG: (filter: string, page: number) => {
       const filterValue = filter === 'all' ? '' : filter

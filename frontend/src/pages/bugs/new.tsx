@@ -12,13 +12,13 @@ import {
 import { toast } from 'react-toastify'
 import { Layout } from '@/components/Layout'
 import { Category } from '@/features/bugs/types/Category'
-import { AddFormButton } from '@/features/bugs/ui/AddFormButton'
+import { Tag } from '@/features/bugs/types/Tag'
 import { CancelButton } from '@/features/bugs/ui/CancelButton'
-import { DeleteFormButton } from '@/features/bugs/ui/DeleteFormButton'
 import { DynamicFormField } from '@/features/bugs/ui/DynamicFormField'
 import { FormField } from '@/features/bugs/ui/FormField'
 import { Input } from '@/features/bugs/ui/Input'
 import { SubmitButton } from '@/features/bugs/ui/SubmitButton'
+import { TagSelect } from '@/features/bugs/ui/TagSelect'
 import { Textarea } from '@/features/bugs/ui/Textarea'
 import {
   BugFormValues,
@@ -33,11 +33,17 @@ export default function BugFormContainer() {
   useRequiredSignedIn()
   const router = useRouter()
 
+  const { data: tags } = useQuery<Tag[]>({
+    queryKey: ['tags'],
+    queryFn: () => fetcher(API_URLS.TAGS),
+  })
+
   const {
     register,
     control,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<BugFormValues>({
     resolver: zodResolver(bugSchema),
@@ -54,6 +60,7 @@ export default function BugFormContainer() {
       references: [{ url: '' }],
       is_solved: false,
       status: 'draft',
+      tags: [],
     },
   })
 
@@ -159,65 +166,14 @@ export default function BugFormContainer() {
           <Input name="title" register={register} />
         </FormField>
 
-        <div>
-          <h3 className="font-bold">環境</h3>
-          {envFields.map((field, index) => (
-            <div key={field.id} className="mb-2 flex gap-2">
-              <div className="w-full gap-2">
-                <select
-                  id={`environments.${index}.category`}
-                  {...register(`environments.${index}.category`)}
-                  className="select select-bordered"
-                  onChange={(e) => handleChangeCategory(index, e.target.value)}
-                >
-                  <option value="">カテゴリを選択</option>
-                  {categories?.map((category: Category) => (
-                    <option key={category.id} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                {errors?.environments?.[index]?.category && (
-                  <span className="text-sm text-red-500">
-                    {errors?.environments?.[index]?.category?.message}
-                  </span>
-                )}
-                <input
-                  id={`environments.${index}.name`}
-                  {...register(`environments.${index}.name`)}
-                  placeholder="技術名"
-                  className="input input-bordered ml-2"
-                />
-                {errors?.environments?.[index]?.name && (
-                  <span className="text-sm text-red-500">
-                    {errors?.environments?.[index]?.name?.message}
-                  </span>
-                )}
-                <input
-                  id={`environments.${index}.version`}
-                  {...register(`environments.${index}.version`)}
-                  placeholder="バージョン（任意）"
-                  className="input input-bordered ml-2"
-                />
-              </div>
-
-              <DeleteFormButton
-                onClick={() => removeEnv(index)}
-                disabled={envFields.length === 1}
-              />
-            </div>
-          ))}
-          <div className="mt-2 flex justify-center">
-            <AddFormButton
-              onClick={() => {
-                addEnv({ category: '', name: '', version: '' })
-              }}
-              disabled={environments.some(
-                (environment) => !environment.category || !environment.name,
-              )}
-            />
-          </div>
-        </div>
+        {tags && (
+          <TagSelect
+            tags={tags}
+            setValue={setValue}
+            watch={watch}
+            error={errors.tags?.message}
+          />
+        )}
 
         <FormField
           label="エラーメッセージ"
@@ -236,8 +192,44 @@ export default function BugFormContainer() {
           <Textarea name="content" register={register} />
         </FormField>
 
+        <DynamicFormField
+          fields={envFields}
+          renderInput={(index) => (
+            <div className="grid w-full grid-cols-2 gap-2 md:grid-cols-3">
+              <select
+                className="select select-bordered"
+                value={environments[index]?.category || ''}
+                onChange={(e) => handleChangeCategory(index, e.target.value)}
+              >
+                <option value="">カテゴリーを選択</option>
+                {categories?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              <Input
+                name={`environments[${index}].name` as Path<BugFormValues>}
+                register={register}
+                error={errors.environments?.[index]?.name?.message}
+              />
+              <Input
+                name={`environments[${index}].version` as Path<BugFormValues>}
+                register={register}
+                error={errors.environments?.[index]?.version?.message}
+              />
+            </div>
+          )}
+          addItem={() => addEnv({ category: '', name: '', version: '' })}
+          removeItem={removeEnv}
+          title="環境"
+          isFieldEmpty={environments.some(
+            (env) => !env.category && !env.name && !env.version,
+          )}
+        />
+
         <FormField
-          label="やりたいこと"
+          label="期待する動作"
           name="expected_behavior"
           error={errors.expected_behavior}
         >
