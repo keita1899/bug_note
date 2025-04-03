@@ -15,6 +15,7 @@ import { Bug } from '@/features/bugs/types/Bug'
 import { BugSection } from '@/features/bugs/ui/BugSection'
 import { BugStatus } from '@/features/bugs/ui/BugStatus'
 import { EnvironmentTable } from '@/features/bugs/ui/EnvironmentTable'
+import { TagList } from '@/features/bugs/ui/TagList'
 import { CommnetForm } from '@/features/comment/components/CommentForm'
 import { CommentList } from '@/features/comment/components/CommentList'
 import { CommentFormData } from '@/features/comment/types/CommnetFormData'
@@ -168,6 +169,7 @@ const BugDetail = () => {
               )}
               <p className="text-right text-sm text-gray-500">{`${bug?.fromToday} に投稿`}</p>
               <h2 className="card-title text-3xl">{bug?.title}</h2>
+              <TagList tags={bug.tags} />
               <div className="my-4 space-y-20">
                 <EnvironmentTable environments={bug?.environments || []} />
                 <BugSection

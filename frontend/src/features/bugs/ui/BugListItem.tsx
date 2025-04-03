@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { BugListItem as BugListItemType } from '../types/BugListItem'
 import LikeButton from '@/components/utilities/LikeButton'
+import { TagList } from '@/features/bugs/ui/TagList'
 
 export const BugListItem = ({
   id,
@@ -12,6 +13,7 @@ export const BugListItem = ({
   status,
   createdAt,
   user,
+  tags,
 }: BugListItemType) => {
   return (
     <Link href={`/bugs/${id}`} className="block">
@@ -35,6 +37,11 @@ export const BugListItem = ({
         <div className="card-body mt-4">
           <h3 className="card-title text-xl font-semibold">{title}</h3>
           <p className="text-sm text-gray-600">投稿日: {createdAt}</p>
+          {tags.length > 0 && (
+            <div className="mt-2">
+              <TagList tags={tags} />
+            </div>
+          )}
           <div className="mt-4 flex items-center gap-4">
             <Link href={`/users/${user.id}`}>
               <div className="avatar">
