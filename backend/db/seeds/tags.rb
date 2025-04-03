@@ -114,8 +114,6 @@ tags = [
   "スクラム",
   "TDD",
   "BDD",
-  "IntelliJ",
-  "WebStorm",
   "PyCharm",
   "RubyMine",
   "GoLand",
