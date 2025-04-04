@@ -21,8 +21,8 @@ export const API_URLS = {
       `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/following`,
   },
   BUG: {
-    INDEX: (page: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/bugs?page=${page}`,
+    INDEX: (page: number, keyword: string) =>
+      `${process.env.NEXT_PUBLIC_API_URL}/bugs?page=${page}&keyword=${keyword}`,
     SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
     CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
     UPDATE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,

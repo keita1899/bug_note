@@ -5,6 +5,7 @@ import { Loading } from '@/components/utilities/Loading'
 import { NoData } from '@/components/utilities/NoData'
 import { Pagination } from '@/components/utilities/Pagination'
 import { BugList } from '@/features/bugs/components/BugList'
+import { BugSearchForm } from '@/features/bugs/components/BugSearchForm'
 import { BugListItem } from '@/features/bugs/types/BugListItem'
 import { Meta } from '@/types/Meta'
 import { fetcher } from '@/utils'
@@ -13,10 +14,11 @@ import { API_URLS } from '@/utils/api'
 const BugListPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
+  const keyword = 'keyword' in router.query ? String(router.query.keyword) : ''
 
   const { data, isPending } = useQuery<{ bugs: BugListItem[]; meta: Meta }>({
-    queryKey: ['bugs', page],
-    queryFn: () => fetcher(API_URLS.BUG.INDEX(page)),
+    queryKey: ['bugs', page, keyword],
+    queryFn: () => fetcher(API_URLS.BUG.INDEX(page, keyword)),
   })
 
   const handleChangePage = (page: number) => {
@@ -25,22 +27,30 @@ const BugListPage = () => {
 
   return (
     <Layout>
-      {isPending ? (
-        <Loading />
-      ) : data?.bugs && data.bugs?.length > 0 ? (
-        <div className="mx-auto my-12 w-full max-w-full p-4 md:max-w-4xl lg:max-w-3xl">
-          <BugList bugs={data.bugs} />
-          <div className="flex justify-center py-6">
-            <Pagination
-              totalPages={data.meta.totalPages}
-              currentPage={data.meta.currentPage}
-              onChange={handleChangePage}
-            />
-          </div>
-        </div>
-      ) : (
-        <NoData />
-      )}
+      <div className="mx-auto my-12 w-full max-w-full p-4 md:max-w-4xl lg:max-w-3xl">
+        <BugSearchForm />
+        {data?.meta?.totalCount && data?.meta?.totalCount > 0 && (
+          <p className="mt-2 text-sm text-gray-600">
+            {data?.meta?.totalCount}件のバグが見つかりました
+          </p>
+        )}
+        {isPending ? (
+          <Loading />
+        ) : data?.bugs && data.bugs?.length > 0 ? (
+          <>
+            <BugList bugs={data.bugs} />
+            <div className="flex justify-center py-6">
+              <Pagination
+                totalPages={data.meta.totalPages}
+                currentPage={data.meta.currentPage}
+                onChange={handleChangePage}
+              />
+            </div>
+          </>
+        ) : (
+          <NoData />
+        )}
+      </div>
     </Layout>
   )
 }
