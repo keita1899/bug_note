@@ -10,16 +10,21 @@ class Bug < ApplicationRecord
   has_many :bug_tags, dependent: :destroy
   has_many :tags, through: :bug_tags
 
+  scope :published, -> { where(status: "published") }
+
   def self.search(params)
-    bugs = Bug.includes(:tags, :likes, :user).where(status: "published")
+    bugs = published.includes(:tags, user: { image_attachment: :blob })
 
-    if params[:keyword].present?
-      bugs = bugs.where(
-        "title LIKE :keyword OR error_message LIKE :keyword",
-        keyword: "%#{params[:keyword]}%",
-      )
-    end
+    return bugs if params[:keyword].blank?
 
-    bugs
+    keyword = "%#{params[:keyword]}%"
+    bugs.where(
+      "title LIKE :keyword OR " \
+      "error_message LIKE :keyword OR " \
+      "id IN (SELECT bug_id FROM bug_tags " \
+      "INNER JOIN tags ON bug_tags.tag_id = tags.id " \
+      "WHERE tags.name LIKE :keyword)",
+      keyword: keyword,
+    )
   end
 end

@@ -39,8 +39,8 @@ export const BugSearchForm = () => {
           <input
             type="text"
             {...register('keyword')}
-            placeholder="キーワードで検索"
-            className="w-full rounded border p-2 pl-10"
+            placeholder="キーワード・タグで検索"
+            className="w-full rounded border p-2 pl-10 outline-none focus:border-transparent focus:ring-2 focus:ring-primary"
           />
           <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           {errors.keyword && (

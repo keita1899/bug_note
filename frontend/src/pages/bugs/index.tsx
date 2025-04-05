@@ -29,10 +29,49 @@ const BugListPage = () => {
     <Layout>
       <div className="mx-auto my-12 w-full max-w-full p-4 md:max-w-4xl lg:max-w-3xl">
         <BugSearchForm />
-        {data?.meta?.totalCount && data?.meta?.totalCount > 0 && (
-          <p className="mt-2 text-sm text-gray-600">
-            {data?.meta?.totalCount}件のバグが見つかりました
-          </p>
+        {!isPending && (
+          <div className="my-8 rounded-lg text-center">
+            <p className="text-sm text-gray-600">
+              {keyword ? (
+                data?.meta?.totalCount ? (
+                  <>
+                    <span className="font-bold text-gray-900">
+                      &quot;{keyword}&quot;
+                    </span>
+                    <span className="text-gray-600"> で </span>
+                    <span className="font-bold text-primary">
+                      {data.meta.totalCount}件
+                    </span>
+                    <span className="text-gray-600">
+                      {' '}
+                      のバグが見つかりました
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-bold text-gray-900">
+                      &quot;{keyword}&quot;
+                    </span>
+                    <span className="text-gray-600">
+                      {' '}
+                      に一致するバグは見つかりませんでした
+                    </span>
+                  </>
+                )
+              ) : data?.meta?.totalCount ? (
+                <>
+                  <span className="font-bold text-primary">
+                    {data.meta.totalCount}件
+                  </span>
+                  <span className="text-gray-600"> のバグが見つかりました</span>
+                </>
+              ) : (
+                <span className="text-gray-600">
+                  バグは見つかりませんでした
+                </span>
+              )}
+            </p>
+          </div>
         )}
         {isPending ? (
           <Loading />
