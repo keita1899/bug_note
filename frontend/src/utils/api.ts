@@ -1,55 +1,57 @@
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || ''
+
 export const API_URLS = {
   AUTH: {
-    SIGNUP: `${process.env.NEXT_PUBLIC_API_URL}/auth`,
-    SIGNIN: `${process.env.NEXT_PUBLIC_API_URL}/auth/sign_in`,
-    DELETE_ACCOUNT: `${process.env.NEXT_PUBLIC_API_URL}/auth`,
-    CONFIRMATION: `${process.env.NEXT_PUBLIC_API_URL}/user/confirmations`,
-    CURRENT_USER: `${process.env.NEXT_PUBLIC_API_URL}/current/user`,
-    PASSWORD: `${process.env.NEXT_PUBLIC_API_URL}/auth/password`,
+    SIGNUP: `${baseUrl}/auth`,
+    SIGNIN: `${baseUrl}/auth/sign_in`,
+    DELETE_ACCOUNT: `${baseUrl}/auth`,
+    CONFIRMATION: `${baseUrl}/user/confirmations`,
+    CURRENT_USER: `${baseUrl}/current/user`,
+    PASSWORD: `${baseUrl}/auth/password`,
   },
   CURRENT: {
-    FOLLOW: `${process.env.NEXT_PUBLIC_API_URL}/current/user/follow`,
-    UNFOLLOW: `${process.env.NEXT_PUBLIC_API_URL}/current/user/unfollow`,
+    FOLLOW: `${baseUrl}/current/user/follow`,
+    UNFOLLOW: `${baseUrl}/current/user/unfollow`,
   },
   USER: {
-    SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`,
+    SHOW: (id: string) => `${baseUrl}/users/${id}`,
     BUG: (id: string, page: number) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/bugs?page=${page}`,
-    FOLLOWERS: (id: string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/followers`,
-    FOLLOWING: (id: string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${id}/following`,
+      `${baseUrl}/users/${id}/bugs?page=${page}`,
+    FOLLOWERS: (id: string) => `${baseUrl}/users/${id}/followers`,
+    FOLLOWING: (id: string) => `${baseUrl}/users/${id}/following`,
   },
   BUG: {
-    INDEX: (page: number, keyword: string) =>
-      `${process.env.NEXT_PUBLIC_API_URL}/bugs?page=${page}&keyword=${keyword}`,
-    SHOW: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
-    CREATE: `${process.env.NEXT_PUBLIC_API_URL}/bugs`,
-    UPDATE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
-    DELETE: (id: string) => `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}`,
+    INDEX: (page: number, keyword?: string, sort?: string) => {
+      const params = new URLSearchParams()
+      params.append('page', page.toString())
+      if (keyword) params.append('keyword', keyword)
+      if (sort) params.append('sort', sort)
+      return `${baseUrl}/bugs?${params.toString()}`
+    },
+    SHOW: (id: string) => `${baseUrl}/bugs/${id}`,
+    CREATE: `${baseUrl}/bugs`,
+    UPDATE: (id: string) => `${baseUrl}/bugs/${id}`,
+    DELETE: (id: string) => `${baseUrl}/bugs/${id}`,
     COMMENT: {
-      CREATE: (bugId: string) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${bugId}/comments`,
+      CREATE: (bugId: string) => `${baseUrl}/bugs/${bugId}/comments`,
       DELETE: (bugId: string, commnetId: string) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${bugId}/comments/${commnetId}`,
+        `${baseUrl}/bugs/${bugId}/comments/${commnetId}`,
     },
     LIKE: {
-      CREATE: (id: string) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}/likes`,
-      DELETE: (id: string) =>
-        `${process.env.NEXT_PUBLIC_API_URL}/bugs/${id}/likes`,
+      CREATE: (id: string) => `${baseUrl}/bugs/${id}/likes`,
+      DELETE: (id: string) => `${baseUrl}/bugs/${id}/likes`,
     },
   },
-  CATEGORIES: `${process.env.NEXT_PUBLIC_API_URL}/categories`,
-  TAGS: `${process.env.NEXT_PUBLIC_API_URL}/tags`,
+  CATEGORIES: `${baseUrl}/categories`,
+  TAGS: `${baseUrl}/tags`,
   MYPAGE: {
     BUG: (filter: string, page: number) => {
       const filterValue = filter === 'all' ? '' : filter
-      return `${process.env.NEXT_PUBLIC_API_URL}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
+      return `${baseUrl}/mypage/bugs${filterValue ? `/${filterValue}` : ''}?page=${page}`
     },
     PROFILE: {
-      SHOW: `${process.env.NEXT_PUBLIC_API_URL}/mypage/profile`,
-      UPDATE: `${process.env.NEXT_PUBLIC_API_URL}/mypage/profile`,
+      SHOW: `${baseUrl}/mypage/profile`,
+      UPDATE: `${baseUrl}/mypage/profile`,
     },
   },
 }

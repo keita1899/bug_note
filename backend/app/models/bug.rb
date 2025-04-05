@@ -11,20 +11,43 @@ class Bug < ApplicationRecord
   has_many :tags, through: :bug_tags
 
   scope :published, -> { where(status: "published") }
+  scope :newest, -> { order(created_at: :desc) }
+  scope :oldest, -> { order(created_at: :asc) }
 
   def self.search(params)
     bugs = published.includes(:tags, user: { image_attachment: :blob })
+    bugs = search_by_keyword(bugs, params[:keyword]) if params[:keyword].present?
+    sort_bugs(bugs, params[:sort])
+  end
 
-    return bugs if params[:keyword].blank?
-
-    keyword = "%#{params[:keyword]}%"
+  def self.search_by_keyword(bugs, keyword)
+    keyword = "%#{keyword}%"
     bugs.where(
       "title LIKE :keyword OR " \
       "error_message LIKE :keyword OR " \
-      "id IN (SELECT bug_id FROM bug_tags " \
+      "bugs.id IN (SELECT bug_id FROM bug_tags " \
       "INNER JOIN tags ON bug_tags.tag_id = tags.id " \
       "WHERE tags.name LIKE :keyword)",
       keyword: keyword,
     )
+  end
+
+  def self.sort_bugs(bugs, sort_type)
+    case sort_type
+    when "newest"
+      bugs.newest
+    when "oldest"
+      bugs.oldest
+    when "most_liked"
+      bugs.joins("LEFT OUTER JOIN likes ON likes.bug_id = bugs.id").
+        group("bugs.id").
+        order("COUNT(likes.id) DESC")
+    when "least_liked"
+      bugs.joins("LEFT OUTER JOIN likes ON likes.bug_id = bugs.id").
+        group("bugs.id").
+        order("COUNT(likes.id) ASC")
+    else
+      bugs.newest
+    end
   end
 end

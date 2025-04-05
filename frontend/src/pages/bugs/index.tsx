@@ -15,14 +15,22 @@ const BugListPage = () => {
   const router = useRouter()
   const page = 'page' in router.query ? Number(router.query.page) : 1
   const keyword = 'keyword' in router.query ? String(router.query.keyword) : ''
+  const sort = 'sort' in router.query ? String(router.query.sort) : 'newest'
 
   const { data, isPending } = useQuery<{ bugs: BugListItem[]; meta: Meta }>({
-    queryKey: ['bugs', page, keyword],
-    queryFn: () => fetcher(API_URLS.BUG.INDEX(page, keyword)),
+    queryKey: ['bugs', page, keyword, sort],
+    queryFn: () => fetcher(API_URLS.BUG.INDEX(page, keyword, sort)),
   })
 
   const handleChangePage = (page: number) => {
-    router.push('bugs?page=' + page)
+    const query = {
+      ...router.query,
+      page,
+    }
+    router.push({
+      pathname: router.pathname,
+      query,
+    })
   }
 
   return (
