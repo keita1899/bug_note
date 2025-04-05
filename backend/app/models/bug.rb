@@ -21,14 +21,14 @@ class Bug < ApplicationRecord
   end
 
   def self.search_by_keyword(bugs, keyword)
-    keyword = "%#{keyword}%"
+    sanitized_keyword = "%#{sanitize_sql_like(keyword)}%"
     bugs.where(
       "title LIKE :keyword OR " \
       "error_message LIKE :keyword OR " \
       "bugs.id IN (SELECT bug_id FROM bug_tags " \
       "INNER JOIN tags ON bug_tags.tag_id = tags.id " \
       "WHERE tags.name LIKE :keyword)",
-      keyword: keyword,
+      keyword: sanitized_keyword,
     )
   end
 
