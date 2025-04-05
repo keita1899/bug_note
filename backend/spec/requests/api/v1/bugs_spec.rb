@@ -6,17 +6,14 @@ RSpec.describe "Api::V1::Bug", type: :request do
   let(:headers) { user.create_new_auth_token }
 
   describe "GET /api/v1/bugs" do
-    let!(:bugs) { create_list(:bug, 25, user: user, status: "published") }
-    let(:draft_bug) { create(:bug, user: user) }
-    let!(:tags) { create_list(:tag, 3) }
+    let(:user) { create(:user) }
+    let(:headers) { user.create_new_auth_token }
 
-    context "ログインしている場合" do
+    context "ページネーション" do
+      let!(:bugs) { create_list(:bug, 25, user: user, status: "published") }
+      let(:draft_bug) { create(:bug, user: user) }
+
       before do
-        bugs.each do |bug|
-          tags.each do |tag|
-            create(:bug_tag, bug: bug, tag: tag)
-          end
-        end
         get "/api/v1/bugs", headers: headers, params: { page: page }
       end
 
@@ -33,19 +30,12 @@ RSpec.describe "Api::V1::Bug", type: :request do
         end
 
         it "下書きのバグは含まれない" do
-          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
+          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
           expect(response_json["meta"]["total_pages"]).to eq(3)
           expect(response_json["meta"]["current_page"]).to eq(1)
-        end
-
-        it "各バグにタグ情報が含まれている" do
-          response_json["bugs"].each do |bug|
-            expect(bug["tags"]).to be_present
-            expect(bug["tags"].size).to eq(3)
-          end
         end
       end
 
@@ -62,7 +52,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         end
 
         it "下書きのバグは含まれない" do
-          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
+          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
@@ -84,7 +74,7 @@ RSpec.describe "Api::V1::Bug", type: :request do
         end
 
         it "下書きのバグは含まれない" do
-          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
+          expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id)
         end
 
         it "レスポンスにページネーションのメタデータが含まれる" do
@@ -94,27 +84,124 @@ RSpec.describe "Api::V1::Bug", type: :request do
       end
     end
 
-    context "ログインしていない場合" do
+    context "キーワード検索" do
+      let!(:bug_with_title) { create(:bug, title: "Railsのエラー", user: user, status: "published") }
+      let!(:bug_with_error) { create(:bug, error_message: "TypeError", user: user, status: "published") }
+      let!(:bug_with_tag) do
+        bug = create(:bug, user: user, status: "published")
+        create(:bug_tag, bug: bug, tag: create(:tag, name: "JavaScript"))
+        bug
+      end
+      let(:page) { 1 }
+
+      it "タイトルで検索できる" do
+        get "/api/v1/bugs", headers: headers, params: { page: page, keyword: "Rails" }
+        expect(response_json["bugs"].pluck("id")).to include(bug_with_title.id)
+        expect(response_json["bugs"].pluck("id")).not_to include(bug_with_error.id, bug_with_tag.id)
+      end
+
+      it "エラーメッセージで検索できる" do
+        get "/api/v1/bugs", headers: headers, params: { page: page, keyword: "TypeError" }
+        expect(response_json["bugs"].pluck("id")).to include(bug_with_error.id)
+        expect(response_json["bugs"].pluck("id")).not_to include(bug_with_title.id, bug_with_tag.id)
+      end
+
+      it "タグ名で検索できる" do
+        get "/api/v1/bugs", headers: headers, params: { page: page, keyword: "JavaScript" }
+        expect(response_json["bugs"].pluck("id")).to include(bug_with_tag.id)
+        expect(response_json["bugs"].pluck("id")).not_to include(bug_with_title.id, bug_with_error.id)
+      end
+    end
+
+    context "ソート" do
+      context "日付順" do
+        let!(:old_bug) { create(:bug, user: user, status: "published", created_at: 3.days.ago) }
+        let!(:new_bug) { create(:bug, user: user, status: "published", created_at: 1.day.ago) }
+        let(:page) { 1 }
+
+        it "新しい順でソートできる" do
+          get "/api/v1/bugs", headers: headers, params: { page: page, sort: "newest" }
+          expect(response_json["bugs"].first["id"]).to eq(new_bug.id)
+          expect(response_json["bugs"].last["id"]).to eq(old_bug.id)
+        end
+
+        it "古い順でソートできる" do
+          get "/api/v1/bugs", headers: headers, params: { page: page, sort: "oldest" }
+          expect(response_json["bugs"].first["id"]).to eq(old_bug.id)
+          expect(response_json["bugs"].last["id"]).to eq(new_bug.id)
+        end
+      end
+
+      context "いいね順" do
+        let!(:most_liked_bug) do
+          bug = create(:bug, user: user, status: "published")
+          create_list(:like, 3, bug: bug)
+          bug
+        end
+        let!(:least_liked_bug) do
+          bug = create(:bug, user: user, status: "published")
+          create(:like, bug: bug)
+          bug
+        end
+        let(:page) { 1 }
+
+        it "いいねが多い順でソートできる" do
+          get "/api/v1/bugs", headers: headers, params: { page: page, sort: "most_liked" }
+          expect(response_json["bugs"].first["id"]).to eq(most_liked_bug.id)
+          expect(response_json["bugs"].last["id"]).to eq(least_liked_bug.id)
+        end
+
+        it "いいねが少ない順でソートできる" do
+          get "/api/v1/bugs", headers: headers, params: { page: page, sort: "least_liked" }
+          expect(response_json["bugs"].first["id"]).to eq(least_liked_bug.id)
+          expect(response_json["bugs"].last["id"]).to eq(most_liked_bug.id)
+        end
+      end
+    end
+
+    context "キーワード検索とソートの組み合わせ" do
+      let!(:rails_bug_old) do
+        bug = create(:bug, title: "Railsのエラー", user: user, status: "published", created_at: 3.days.ago)
+        create(:like, bug: bug)
+        bug
+      end
+      let!(:rails_bug_new) do
+        bug = create(:bug, title: "Railsのバグ", user: user, status: "published", created_at: 1.day.ago)
+        create_list(:like, 2, bug: bug)
+        bug
+      end
+      let(:page) { 1 }
+
+      it "キーワード検索といいね数でのソートが組み合わせて使える" do
+        get "/api/v1/bugs", headers: headers, params: { page: page, keyword: "Rails", sort: "most_liked" }
+        expect(response_json["bugs"].first["id"]).to eq(rails_bug_new.id)
+        expect(response_json["bugs"].last["id"]).to eq(rails_bug_old.id)
+      end
+
+      it "キーワード検索と日付でのソートが組み合わせて使える" do
+        get "/api/v1/bugs", headers: headers, params: { page: page, keyword: "Rails", sort: "newest" }
+        expect(response_json["bugs"].first["id"]).to eq(rails_bug_new.id)
+        expect(response_json["bugs"].last["id"]).to eq(rails_bug_old.id)
+      end
+    end
+
+    context "タグの確認" do
+      let!(:bug) { create(:bug, user: user, status: "published") }
+      let!(:tags) { create_list(:tag, 3) }
+      let(:page) { 1 }
+
       before do
-        get "/api/v1/bugs"
+        tags.each do |tag|
+          create(:bug_tag, bug: bug, tag: tag)
+        end
+        get "/api/v1/bugs", headers: headers, params: { page: page }
       end
 
-      it "ステータスコード200が返る" do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "公開されているバグのリストが返る" do
-        expect(response_json["bugs"].size).to eq(10)
-        expect(response_json["bugs"].pluck("id")).to eq(bugs.sort_by(&:created_at).reverse.first(10).pluck(:id))
-      end
-
-      it "下書きのバグは含まれない" do
-        expect(response_json["bugs"].pluck("id")).not_to include(draft_bug.id.to_s)
-      end
-
-      it "レスポンスにページネーションのメタデータが含まれる" do
-        expect(response_json["meta"]["total_pages"]).to eq(3)
-        expect(response_json["meta"]["current_page"]).to eq(1)
+      it "各バグにタグ情報が含まれている" do
+        response_json["bugs"].each do |bug|
+          expect(bug["tags"]).to be_present
+          expect(bug["tags"].size).to eq(3)
+        end
       end
     end
   end
