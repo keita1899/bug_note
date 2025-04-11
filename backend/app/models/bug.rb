@@ -1,4 +1,6 @@
 class Bug < ApplicationRecord
+  include Notifiable
+
   belongs_to :user
 
   has_many :environments, dependent: :destroy
@@ -13,6 +15,8 @@ class Bug < ApplicationRecord
   scope :published, -> { where(status: "published") }
   scope :newest, -> { order(created_at: :desc) }
   scope :oldest, -> { order(created_at: :asc) }
+
+  after_create :create_notification_for_published_bug
 
   def self.search(params)
     bugs = published.includes(:tags, user: { image_attachment: :blob })
@@ -50,4 +54,12 @@ class Bug < ApplicationRecord
       bugs.newest
     end
   end
+
+  private
+
+    def create_notification_for_published_bug
+      return unless status == "published"
+
+      create_notifications_for_followers("published")
+    end
 end

@@ -43,6 +43,11 @@ Rails.application.routes.draw do
           end
         end
         resource :profile, only: [:show, :update]
+        resources :notifications, only: [:index, :update, :destroy] do
+          collection do
+            get :header
+          end
+        end
       end
     end
   end
