@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_01_064044) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_06_002611) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -124,6 +124,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_01_064044) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "actor_id", null: false
+    t.string "notifiable_type", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "action", default: "liked", null: false
+    t.boolean "read", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "references", force: :cascade do |t|
     t.bigint "bug_id", null: false
     t.string "url", null: false
@@ -180,5 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_01_064044) do
   add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "likes", "bugs"
   add_foreign_key "likes", "users"
+  add_foreign_key "notifications", "users"
+  add_foreign_key "notifications", "users", column: "actor_id"
   add_foreign_key "references", "bugs"
 end
