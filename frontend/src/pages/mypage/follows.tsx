@@ -111,7 +111,7 @@ const FollowIndex = () => {
 
   return (
     <MypageLayout>
-      <div className="mx-auto my-12 w-full max-w-full p-4 md:max-w-4xl lg:max-w-3xl">
+      <div className="mx-auto w-full max-w-full md:max-w-4xl lg:max-w-3xl">
         <div className="mt-8 flex justify-center">
           <Tabs<FollowTabValue>
             tabs={tabs}
