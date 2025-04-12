@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import axios from 'axios'
 import { NextRouter, useRouter } from 'next/router'
@@ -21,6 +22,7 @@ jest.mock('react-toastify', () => ({
 
 describe('Confirmation', () => {
   let mockRouter: NextRouter
+  let queryClient: QueryClient
 
   beforeEach(() => {
     mockRouter = {
@@ -29,13 +31,23 @@ describe('Confirmation', () => {
       push: jest.fn(),
     } as unknown as NextRouter
     ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
+
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    })
   })
 
   it('ローディングメッセージが表示される', () => {
     render(
-      <AuthProvider>
-        <Confirmation />
-      </AuthProvider>,
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Confirmation />
+        </AuthProvider>
+      </QueryClientProvider>,
     )
     expect(
       screen.getByText('アカウントを有効化しています...'),
@@ -47,9 +59,11 @@ describe('Confirmation', () => {
     ;(axios.patch as jest.Mock).mockResolvedValue({})
 
     render(
-      <AuthProvider>
-        <Confirmation />
-      </AuthProvider>,
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Confirmation />
+        </AuthProvider>
+      </QueryClientProvider>,
     )
 
     await waitFor(() => {
@@ -71,9 +85,11 @@ describe('Confirmation', () => {
     })
 
     render(
-      <AuthProvider>
-        <Confirmation />
-      </AuthProvider>,
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Confirmation />
+        </AuthProvider>
+      </QueryClientProvider>,
     )
 
     await waitFor(() => {
@@ -86,9 +102,11 @@ describe('Confirmation', () => {
     mockRouter.query = {}
 
     render(
-      <AuthProvider>
-        <Confirmation />
-      </AuthProvider>,
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Confirmation />
+        </AuthProvider>
+      </QueryClientProvider>,
     )
 
     await waitFor(() => {
