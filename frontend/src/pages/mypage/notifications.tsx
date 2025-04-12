@@ -66,7 +66,6 @@ const Notifications = () => {
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications', page, tab] })
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
     },
   })
