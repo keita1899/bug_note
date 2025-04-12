@@ -16,7 +16,7 @@ export const FollowButton = ({
       className={`group btn w-24 p-0.5 text-xs transition-colors duration-300 md:w-32 md:p-2 md:text-base ${
         isFollowing
           ? 'bg-black text-white hover:bg-red-600'
-          : 'border border-black bg-white text-black hover:bg-gray-100'
+          : 'bg-gray-200 text-black hover:bg-gray-300'
       }`}
       disabled={isLoading}
       onClick={isFollowing ? onUnfollow : onFollow}
