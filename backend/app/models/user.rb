@@ -6,6 +6,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
   include DeviseTokenAuth::Concerns::User
+  include Notifiable
 
   before_create :set_default_name, if: :name_blank?
 
@@ -18,6 +19,7 @@ class User < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :liked_bugs, through: :likes, source: :bug
   has_one_attached :image
+  has_many :notifications, dependent: :destroy
 
   PASSWORD_COMPLEXITY_REGEX = /\A(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,128}\z/
   MAX_IMAGE_SIZE = 3.megabytes

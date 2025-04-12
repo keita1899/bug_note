@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Comments", type: :request do
   let(:user) { create(:user) }
   let(:headers) { user.create_new_auth_token }
-  let(:bug) { create(:bug) }
+  let(:other_user) { create(:user) }
+  let(:bug) { create(:bug, user: other_user) }
 
   describe "POST /api/v1/bugs/:bug_id/comments" do
     let(:valid_params) { { comment: { content: "コメント" } } }
@@ -17,6 +18,20 @@ RSpec.describe "Api::V1::Comments", type: :request do
 
         expect(response).to have_http_status(:created)
         expect(response.body).to include("コメントしました")
+      end
+
+      it "コメントした時に通知が作成される" do
+        expect {
+          post api_v1_bug_comments_path(bug), params: valid_params, headers: headers
+        }.to change { Notification.count }.by(1)
+
+        notification = Notification.last
+        expect(notification.user).to eq(other_user)
+        expect(notification.notifiable).to be_a(Comment)
+        expect(notification.notifiable.bug).to eq(bug)
+        expect(notification.notifiable.user).to eq(user)
+        expect(notification.action).to eq("commented")
+        expect(notification.read).to be_falsey
       end
 
       it "コメント内容が無効な場合、エラーを返す" do

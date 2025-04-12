@@ -13,6 +13,20 @@ RSpec.describe "Api::V1::Current::Follows", type: :request do
         expect(response_json["message"]).to eq("フォローしました")
       end
 
+      it "フォローした時に通知が作成される" do
+        expect {
+          post follow_api_v1_current_user_path, params: { id: other_user.id }, headers: headers
+        }.to change { Notification.count }.by(1)
+
+        notification = Notification.last
+        expect(notification.user).to eq(other_user)
+        expect(notification.notifiable).to be_a(Follow)
+        expect(notification.notifiable.follower).to eq(user)
+        expect(notification.notifiable.followed).to eq(other_user)
+        expect(notification.action).to eq("followed")
+        expect(notification.read).to be_falsey
+      end
+
       it "自分をフォローできない" do
         post follow_api_v1_current_user_path, params: { id: user.id }, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)

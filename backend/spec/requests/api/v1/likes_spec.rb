@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Likes", type: :request do
   let(:user) { create(:user) }
   let(:headers) { user.create_new_auth_token }
-  let(:published_bug) { create(:bug, :published, user: user) }
+  let(:other_user) { create(:user) }
+  let(:published_bug) { create(:bug, :published, user: other_user) }
 
   describe "POST /api/v1/bugs/:id/likes" do
     context "ログインしている場合" do
@@ -14,6 +15,20 @@ RSpec.describe "Api::V1::Likes", type: :request do
 
         expect(response).to have_http_status(:created)
         expect(response_json["message"]).to eq("いいねしました")
+      end
+
+      it "いいねした時に通知が作成される" do
+        expect {
+          post api_v1_bug_likes_path(published_bug.id), headers: headers
+        }.to change { Notification.count }.by(1)
+
+        notification = Notification.last
+        expect(notification.user).to eq(other_user)
+        expect(notification.notifiable).to be_a(Like)
+        expect(notification.notifiable.bug).to eq(published_bug)
+        expect(notification.notifiable.user).to eq(user)
+        expect(notification.action).to eq("liked")
+        expect(notification.read).to be_falsey
       end
 
       it "すでにいいねされている場合、いいねが失敗する" do
@@ -39,7 +54,6 @@ RSpec.describe "Api::V1::Likes", type: :request do
   describe "DELETE /api/v1/bugs/:id/likes" do
     context "ログインしている場合" do
       before do
-        # 初回のいいね作成
         published_bug.likes.create(user: user)
       end
 

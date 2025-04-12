@@ -10,7 +10,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def bugs
     user = find_user
-    bugs = user.bugs.where(status: "published").order(created_at: :desc).page(params[:page] || 1).per(10)
+    bugs = user.bugs.published.newest.includes(:tags).page(params[:page] || 1).per(10)
     render json: bugs, each_serializer: BugListSerializer, status: :ok, meta: pagination(bugs), adapter: :json
   end
 

@@ -10,7 +10,7 @@ export const CancelButton = ({ onClick }: CancelButtonProps) => {
   return (
     <button
       type="button"
-      onClick={onClick ?? (() => router.push('/'))}
+      onClick={onClick ?? (() => router.back())}
       className="btn btn-outline w-32 bg-white px-6"
     >
       キャンセル

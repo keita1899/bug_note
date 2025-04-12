@@ -425,6 +425,14 @@ RSpec.describe "Api::V1::Bug", type: :request do
       }
     end
 
+    let(:publish_params) do
+      valid_params.merge(
+        status: "published",
+        is_solved: true,
+        solution: "Solution to the bug",
+      )
+    end
+
     let(:invalid_params) do
       {
         title: "",
@@ -453,6 +461,21 @@ RSpec.describe "Api::V1::Bug", type: :request do
           expect(response).to have_http_status(:ok)
           expect(response_json["message"]).to eq("バグを更新しました")
           expect(bug.reload.tags.pluck(:id)).to match_array(tags.map(&:id))
+        end
+
+        it "バグを公開した時にフォロワーに通知が作成される" do
+          follower = create(:user)
+          follower.follow(user)
+
+          expect {
+            patch "/api/v1/bugs/#{bug.id}", params: publish_params, headers: headers
+          }.to change { Notification.count }.by(1)
+
+          notification = Notification.last
+          expect(notification.user).to eq(follower)
+          expect(notification.notifiable).to eq(bug)
+          expect(notification.action).to eq("published")
+          expect(notification.read).to be_falsey
         end
 
         it "間違った値を入力した場合バグの更新が失敗し、422 エラーを返す" do

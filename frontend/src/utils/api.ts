@@ -53,5 +53,12 @@ export const API_URLS = {
       SHOW: `${baseUrl}/mypage/profile`,
       UPDATE: `${baseUrl}/mypage/profile`,
     },
+    NOTIFICATIONS: {
+      INDEX: (page: number, tab: string) =>
+        `${baseUrl}/mypage/notifications?page=${page}&tab=${tab}`,
+      HEADER: `${baseUrl}/mypage/notifications/header`,
+      UPDATE: (id: string) => `${baseUrl}/mypage/notifications/${id}`,
+      DELETE: (id: string) => `${baseUrl}/mypage/notifications/${id}`,
+    },
   },
 }
