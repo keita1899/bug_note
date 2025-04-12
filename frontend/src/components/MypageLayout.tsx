@@ -25,6 +25,13 @@ export const MypageLayout = ({ children }: { children: ReactNode }) => {
             <li className={isActive('/mypage/follows') ? 'text-primary' : ''}>
               <Link href="/mypage/follows">フォロー・フォロワー</Link>
             </li>
+            <li
+              className={
+                isActive('/mypage/notifications') ? 'text-primary' : ''
+              }
+            >
+              <Link href="/mypage/notifications">通知</Link>
+            </li>
             <li className={isActive('/mypage/profile') ? 'text-primary' : ''}>
               <Link href="/mypage/profile">プロフィール</Link>
             </li>

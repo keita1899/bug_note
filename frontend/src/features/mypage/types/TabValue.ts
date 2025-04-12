@@ -7,3 +7,5 @@ export type TabValue =
   | 'liked'
 
 export type FollowTabValue = 'followers' | 'following'
+
+export type NotificationTabValue = 'all' | 'unread' | 'read'
