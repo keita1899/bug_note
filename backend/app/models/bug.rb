@@ -16,7 +16,7 @@ class Bug < ApplicationRecord
   scope :newest, -> { order(created_at: :desc) }
   scope :oldest, -> { order(created_at: :asc) }
 
-  after_create :create_notification_for_published_bug
+  before_save :create_notification_for_published_bug, if: :status_changed_to_published?
 
   def self.search(params)
     bugs = published.includes(:tags, user: { image_attachment: :blob })
@@ -57,9 +57,11 @@ class Bug < ApplicationRecord
 
   private
 
-    def create_notification_for_published_bug
-      return unless status == "published"
+    def status_changed_to_published?
+      status_changed? && status == "published"
+    end
 
+    def create_notification_for_published_bug
       create_notifications_for_followers("published")
     end
 end
